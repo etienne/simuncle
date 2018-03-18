@@ -1,0 +1,36 @@
+.Person {
+  display: flex;
+  position: relative;
+  background: url('../assets/person.svg') no-repeat 50% 50%;
+  background-size: 60%;
+  width: 20vw;
+  height: 20vw;
+  
+  &#player {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%);
+  }
+
+  &#uncle {
+    background-image: url('../assets/uncle.svg');
+    order: 3;
+  }
+
+  &#bystander1 {
+    order: 1;
+  }
+
+  &#bystander2 {
+    order: 2;
+  }
+
+  &#bystander3 {
+    order: 4;
+  }
+  
+  &#bystander4 {
+    order: 5;
+  }
+}

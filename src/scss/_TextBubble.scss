@@ -1,0 +1,26 @@
+.TextBubble {
+  position: absolute;
+  background-color: white;
+  min-width: 40vw;
+  border: 1px solid;
+  left: 50%;
+  bottom: 0;
+  transform: translate(-50%, 100%);
+  
+  .text {
+    padding: 1em;
+  }
+  
+  .timer {
+    transition: width 8s linear;
+    position: absolute;
+    width: 0;
+    bottom: 0;
+    height: 4px;
+    background-color: black;
+    
+    &.active {
+      width: 100%;
+    }
+  }
+}

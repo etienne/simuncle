@@ -1,5 +1,6 @@
+@import 'Person';
+@import 'TextBubble';
+
 body {
-  div {
-    color: green;
-  }
+  display: flex;
 }
