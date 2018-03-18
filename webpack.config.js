@@ -1,3 +1,4 @@
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
@@ -20,6 +21,14 @@ module.exports = {
     ],
   },
   plugins: [
+    new BrowserSyncPlugin({
+      host: 'localhost',
+      open: false,
+      notify: false,
+      port: 3000,
+      server: { baseDir: ['dist'] },
+      ui: false,
+    }),
     new ExtractTextPlugin("styles.css"),
   ]
 };
