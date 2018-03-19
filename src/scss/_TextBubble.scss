@@ -1,18 +1,22 @@
 .TextBubble {
   position: absolute;
   background-color: white;
-  min-width: 40vw;
+  min-width: 300px;
+  max-width: 30vw;
   border: 1px solid;
   left: 50%;
   bottom: 0;
   transform: translate(-50%, 100%);
+  font-size: 16px;
+  line-height: 22px;
+  font-family: sans-serif;
   
   .text {
     padding: 1em;
   }
   
   .timer {
-    transition: width 8s linear;
+    transition: width 3s linear;
     position: absolute;
     width: 0;
     bottom: 0;

@@ -22,6 +22,15 @@ module.exports = {
         test: /\.(svg)$/,
         use: "file-loader",
       },
+      {
+        test: /\.csv$/,
+        loader: 'csv-loader',
+        options: {
+          dynamicTyping: true,
+          header: true,
+          skipEmptyLines: true,
+        },
+      },
     ],
   },
   plugins: [

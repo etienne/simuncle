@@ -12,11 +12,20 @@ export default class TextBubble {
     // Append to parent element
     parentElement.appendChild(this.element);
     
+    // Show timer
     if (options.timeLimit) {
       const timer = createElement('div', 'timer');
       this.element.appendChild(timer);
       window.setTimeout(() => { timer.classList.toggle('active'); }, 0);
-      window.setTimeout(options.callback, options.timeLimit);
     }
+      
+    // Run callback
+    const callback = () => {
+      if (options.callback) {
+        options.callback();
+      }
+      this.element.parentNode.removeChild(this.element);
+    };
+    window.setTimeout(callback, options.timeLimit || 3000);
   }  
 }

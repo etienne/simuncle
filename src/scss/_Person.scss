@@ -5,12 +5,19 @@
   background-size: 60%;
   width: 20vw;
   height: 20vw;
+  max-height: 25vh;
   
   &#player {
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translate(-50%);
+    
+    .TextBubble {
+      top: 0;
+      bottom: initial;
+      transform: translate(-50%, -100%);
+    }
   }
 
   &#uncle {
@@ -18,15 +25,19 @@
     order: 3;
   }
 
-  &#bystander1 {
+  &#cousin1 {
     order: 1;
+    
+    .TextBubble {
+      transform: translate(-20%, 100%);
+    }
   }
 
-  &#bystander2 {
+  &#cousin2 {
     order: 2;
   }
 
-  &#bystander3 {
+  &#mom {
     order: 4;
   }
   

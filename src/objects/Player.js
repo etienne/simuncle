@@ -1,8 +1,8 @@
 import Person from './Person';
 import TextBubble from './TextBubble';
 
-export default class Uncle extends Person {
+export default class Player extends Person {
   constructor() {
-    super('Uncle');
+    super('Player');
   }
 }
