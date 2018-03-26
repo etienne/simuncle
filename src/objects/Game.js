@@ -2,6 +2,7 @@ import Person from './Person';
 import Player from './Player';
 import Uncle from './Uncle';
 import dialogs from '../dialogs';
+import shuffle from '../helpers/shuffle';
 
 export default class Game {
   constructor() {
@@ -19,7 +20,6 @@ export default class Game {
   }
   
   startDialog(name) {
-    console.log(dialogs);
     const dialog = dialogs[name];
     
     for (let i = 0; i < dialog.length; i++) {
@@ -27,21 +27,14 @@ export default class Game {
       this.enqueueEvent(() => {
         this.characters[line.person].say(line.text, line.branch, this.advanceQueue.bind(this));
       });
-      
+
       if (line.branch) {
         const branchLines = dialogs[`branch_${line.branch}`];
-        const randomLine = branchLines[Math.floor(Math.random()*branchLines.length)];
-        console.log(randomLine);
-        
+        shuffle(branchLines);
+
         this.enqueueEvent(() => {
-          this.characters['Player'].say(randomLine.response, null, this.advanceQueue.bind(this));
+          this.characters['Player'].choose(branchLines, this.advanceQueue.bind(this), this.characters['Uncle']);
         });
-        
-        if (randomLine.reaction) {
-          this.enqueueEvent(() => {
-            this.characters['Uncle'].say(randomLine.reaction, null, this.advanceQueue.bind(this));
-          });
-        }
       }
     }
     this.advanceQueue();
@@ -61,5 +54,9 @@ export default class Game {
         event.event();
       }
     }
+  }
+  
+  update() {
+    console.log('this runs all the time');
   }
 }

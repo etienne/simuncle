@@ -16,7 +16,7 @@
   }
   
   .timer {
-    transition: width 3s linear;
+    transition: width 8s linear;
     position: absolute;
     width: 0;
     bottom: 0;
@@ -27,4 +27,28 @@
       width: 100%;
     }
   }
+  
+  button {
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 0 1em 1em;
+    background: white url('../assets/checkmark.svg') no-repeat 50% 50%;
+    border: 1px solid;
+    width: 72px;
+    height: 72px;
+    border-radius: 36px;
+    
+    &:hover {
+      background-color: #ddd;
+    }
+
+    &:active {
+      background-color: #666;
+    }
+    
+    &.dismiss {
+      background-image: url('../assets/x.svg');
+    }
+  }
+  
 }

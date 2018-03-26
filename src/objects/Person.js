@@ -1,5 +1,6 @@
 import createElement from '../helpers/createElement';
 import TextBubble from './TextBubble';
+import TimedBubble from './TimedBubble';
 
 export default class Person {
   constructor(name) {
@@ -9,14 +10,8 @@ export default class Person {
   }
   
   say(text, branch, callback) {
-    const options = {
-      callback,
-    };
-    
-    if (branch) {
-      options.timeLimit = 3000;
-    }
-    
-    this.textBubble = new TextBubble(text, this.element, options);
+    this.textBubble = branch
+      ? new TimedBubble(text, this.element, callback)
+      : new TextBubble(text, this.element, callback);
   }
 }
