@@ -1,5 +1,4 @@
-import Person from './Person';
-import TextBubble from './TextBubble';
+import { Person } from '.';
 
 export default class Uncle extends Person {
   constructor() {

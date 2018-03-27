@@ -1,5 +1,4 @@
-import Person from './Person';
-import ActionBubble from './ActionBubble';
+import { ActionBubble, Person } from '.';
 
 export default class Player extends Person {
   constructor() {

@@ -1,11 +1,14 @@
-import Person from './Person';
-import Player from './Player';
-import Uncle from './Uncle';
+import { Person, Player, Uncle } from '.';
 import dialogs from '../dialogs';
 import shuffle from '../helpers/shuffle';
 
 export default class Game {
   constructor() {
+    this.queue = [];
+    this.start();
+  }
+  
+  start() {
     this.characters = {
       'Player': new Player(),
       'Uncle': new Uncle(),
@@ -14,8 +17,6 @@ export default class Game {
       'Mom': new Person('Mom'),
       'Bystander 4': new Person('bystander4'),
     };
-    this.queue = [];
-    
     this.startDialog('intro');
   }
   
@@ -54,9 +55,5 @@ export default class Game {
         event.event();
       }
     }
-  }
-  
-  update() {
-    console.log('this runs all the time');
   }
 }

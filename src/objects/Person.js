@@ -1,6 +1,5 @@
 import createElement from '../helpers/createElement';
-import TextBubble from './TextBubble';
-import TimedBubble from './TimedBubble';
+import { TextBubble, TimedBubble } from '.';
 
 export default class Person {
   constructor(name) {

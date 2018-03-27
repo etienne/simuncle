@@ -1,5 +1,5 @@
 import createElement from '../helpers/createElement';
-import TextBubble from './TextBubble';
+import { TextBubble } from '.';
 
 export default class ActionBubble extends TextBubble {
   constructor(text, parentElement, chooseCallback, dismissCallback) {

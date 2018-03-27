@@ -1,4 +1,4 @@
-import TextBubble from './TextBubble';
+import { TextBubble } from '.';
 import createElement from '../helpers/createElement';
 
 export default class TimedBubble extends TextBubble {
