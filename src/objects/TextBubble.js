@@ -1,7 +1,9 @@
 import createElement from '../helpers/createElement';
+import { GameObject } from '.';
 
-export default class TextBubble {
-  constructor(text, parentElement, callback) {
+export default class TextBubble extends GameObject {
+  constructor(game, text, parentElement, callback) {
+    super(game)
     this.element = createElement('div', 'TextBubble');
     this.callback = callback;
     

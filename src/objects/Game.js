@@ -10,12 +10,12 @@ export default class Game {
   
   start() {
     this.characters = {
-      'Player': new Player(),
-      'Uncle': new Uncle(),
-      'Cousin 1': new Person('Cousin 1'),
-      'Cousin 2': new Person('Cousin 2'),
-      'Mom': new Person('Mom'),
-      'Bystander 4': new Person('bystander4'),
+      'Player': new Player(this),
+      'Uncle': new Uncle(this),
+      'Cousin 1': new Person(this,'Cousin 1'),
+      'Cousin 2': new Person(this, 'Cousin 2'),
+      'Mom': new Person(this, 'Mom'),
+      'Bystander 4': new Person(this, 'bystander4'),
     };
     this.startDialog('intro');
   }

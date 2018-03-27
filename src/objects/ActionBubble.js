@@ -2,8 +2,8 @@ import createElement from '../helpers/createElement';
 import { TextBubble } from '.';
 
 export default class ActionBubble extends TextBubble {
-  constructor(text, parentElement, chooseCallback, dismissCallback) {
-    super(text, parentElement, chooseCallback);
+  constructor(game, text, parentElement, chooseCallback, dismissCallback) {
+    super(game, text, parentElement, chooseCallback);
     const dismissButton = createElement('button', 'dismiss');
     const chooseButton = createElement('button', 'choose');
 

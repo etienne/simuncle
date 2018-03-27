@@ -1,8 +1,9 @@
 import createElement from '../helpers/createElement';
-import { TextBubble, TimedBubble } from '.';
+import { GameObject, TextBubble, TimedBubble } from '.';
 
-export default class Person {
-  constructor(name) {
+export default class Person extends GameObject {
+  constructor(game, name) {
+    super(game);
     const id = name.toLowerCase().split(' ').join('');
     this.element = createElement('div', 'Person', id);
     document.body.appendChild(this.element);
@@ -10,7 +11,7 @@ export default class Person {
   
   say(text, branch, callback) {
     this.textBubble = branch
-      ? new TimedBubble(text, this.element, callback)
-      : new TextBubble(text, this.element, callback);
+      ? new TimedBubble(this.game, text, this.element, callback)
+      : new TextBubble(this.game, text, this.element, callback);
   }
 }

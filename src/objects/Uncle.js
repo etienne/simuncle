@@ -1,7 +1,7 @@
 import { Person } from '.';
 
 export default class Uncle extends Person {
-  constructor() {
-    super('Uncle');
+  constructor(game) {
+    super(game, 'Uncle');
   }
 }
