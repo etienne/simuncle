@@ -8,15 +8,20 @@ export default class TimedBubble extends TextBubble {
     // Add timer
     const timer = createElement('div', 'timer');
     this.element.appendChild(timer);
-    window.setTimeout(() => { timer.classList.toggle('active'); }, 0);
+    setTimeout(() => { timer.classList.toggle('active'); }, 0);
     
     // Automatically remove bubble once the timer is up
-    window.setTimeout(() => {
+    this.timeout = setTimeout(() => {
       this.game.characters['Player'].autoChoose();
     }, timeLimit);
   }
   
   handleCallback() {
     this.callback();
+  }
+  
+  remove() {
+    super.remove();
+    clearTimeout(this.timeout);
   }
 }

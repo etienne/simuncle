@@ -9,7 +9,7 @@ export default class ActionBubble extends TextBubble {
 
     if (dismissCallback) {
       dismissButton.onclick = () => {
-        window.setTimeout(() => {
+        setTimeout(() => {
           dismissCallback();
         }, 250);
         this.remove();

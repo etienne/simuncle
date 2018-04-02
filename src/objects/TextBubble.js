@@ -16,7 +16,7 @@ export default class TextBubble extends GameObject {
   }
   
   handleCallback() {
-    window.setTimeout(() => {
+    setTimeout(() => {
       this.callback();
       this.remove();
     }, 3000);

@@ -50,7 +50,7 @@ export default class Game {
     
     if (event) {
       if (event.delay) {
-        window.setTimeout(event.event, event.delay)
+        setTimeout(event.event, event.delay)
       } else {
         event.event();
       }
