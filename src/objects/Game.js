@@ -1,4 +1,4 @@
-import { Person, Player, Uncle } from '.';
+import { Person } from '.';
 import dialogs from '../dialogs';
 import shuffle from '../helpers/shuffle';
 
@@ -10,8 +10,8 @@ export default class Game {
   
   start() {
     this.characters = {
-      'Player': new Player(this),
-      'Uncle': new Uncle(this),
+      'Player': new Person(this, 'Player'),
+      'Uncle': new Person(this, 'Uncle'),
       'Cousin 1': new Person(this,'Cousin 1'),
       'Cousin 2': new Person(this, 'Cousin 2'),
       'Mom': new Person(this, 'Mom'),
