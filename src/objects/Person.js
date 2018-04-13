@@ -6,7 +6,7 @@ export default class Person extends GameObject {
     super(game);
     const id = name.toLowerCase().split(' ').join('');
     this.element = createElement('div', 'Person', id);
-    document.body.appendChild(this.element);
+    game.stage.appendChild(this.element);
   }
   
   say(text, branch, callback) {

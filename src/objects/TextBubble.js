@@ -3,8 +3,9 @@ import { GameObject } from '.';
 
 export default class TextBubble extends GameObject {
   constructor(game, text, parentElement, callback) {
-    super(game)
+    super(game);
     this.element = createElement('div', 'TextBubble');
+    this.text = text;
     this.callback = callback;
     
     const textBox = createElement('div', 'text');
@@ -12,17 +13,23 @@ export default class TextBubble extends GameObject {
     this.element.appendChild(textBox);
     parentElement.appendChild(this.element);
     
+    this.boundClickCallback = this.clickCallback.bind(this);
     this.handleCallback();
   }
   
+  clickCallback() {
+    this.remove();
+    this.callback();
+  }
+  
   handleCallback() {
-    setTimeout(() => {
-      this.callback();
-      this.remove();
-    }, 3000);
+    this.game.stage.addEventListener('mousedown', this.boundClickCallback);
+    this.game.stage.classList.add('clickable');
   }
   
   remove() {
     this.element.parentNode.removeChild(this.element);
+    this.game.stage.removeEventListener('mousedown', this.boundClickCallback);
+    this.game.stage.classList.remove('clickable');
   }
 }

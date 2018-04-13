@@ -1,5 +1,6 @@
 import { Person } from '.';
 import dialogs from '../dialogs';
+import createElement from '../helpers/createElement';
 import shuffle from '../helpers/shuffle';
 
 export default class Game {
@@ -9,6 +10,9 @@ export default class Game {
   }
   
   start() {
+    this.stage = createElement('div', 'Stage');
+    document.body.appendChild(this.stage);
+    console.log('ok yes');
     this.characters = {
       'Player': new Person(this, 'Player'),
       'Uncle': new Person(this, 'Uncle'),
