@@ -21,7 +21,7 @@ export default class Person extends GameObject {
     
     const chooseCallback = () => {
       uncle.textBubble.remove();
-      if (line.reaction) {
+      if (line.reaction && line.reaction !== ' ') {
         uncle.say(line.reaction, null, callback);
       } else {
         callback();
