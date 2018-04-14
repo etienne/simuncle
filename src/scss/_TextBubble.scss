@@ -1,14 +1,14 @@
 .TextBubble {
   position: absolute;
   background-color: white;
-  min-width: 300px;
+  min-width: 320px;
   max-width: 30vw;
   border: 1px solid;
   left: 50%;
   bottom: 0;
   transform: translate(-50%, 100%);
-  font-size: 16px;
-  line-height: 22px;
+  font-size: 1.5vw;
+  line-height: 2.1vw;
   font-family: sans-serif;
   
   .text {
@@ -33,10 +33,11 @@
     display: inline-block;
     margin: 0 0 1em 1em;
     background: white url('../assets/checkmark.svg') no-repeat 50% 50%;
+    background-size: 100%;
     border: 1px solid;
-    width: 72px;
-    height: 72px;
-    border-radius: 36px;
+    width: 7vw;
+    height: 7vw;
+    border-radius: 3.5vw;
     
     &:hover {
       background-color: #ddd;
