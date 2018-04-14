@@ -20,6 +20,7 @@
     "extract-text-webpack-plugin": "^v4.0.0-alpha.0",
     "file-loader": "^1.1.11",
     "node-sass": "^4.7.2",
+    "papaparse": "4.3.7",
     "reset-css": "^3.0.0",
     "sass-loader": "^6.0.7",
     "style-loader": "^0.20.3",
