@@ -20,7 +20,7 @@ export default class Game {
       'Cousin 1': new Person(this,'Cousin 1'),
       'Cousin 2': new Person(this, 'Cousin 2'),
       'Mom': new Person(this, 'Mom'),
-      'Bystander 4': new Person(this, 'bystander4'),
+      'Bystander': new Person(this, 'Bystander'),
     };
     this.startDialog('intro');
   }

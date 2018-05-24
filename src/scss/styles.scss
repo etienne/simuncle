@@ -1,8 +1,9 @@
-@import 'Person';
-@import 'Player';
-@import 'Stage';
-@import 'TextBubble';
-
 body {
   background-color: gray;
+}
+
+#container {
+  canvas {
+    max-width: 100%;
+  }
 }

@@ -1,5 +1,5 @@
 export default class GameObject {
-  constructor(game) {
-    this.game = game;
+  constructor(scene) {
+    this.scene = scene;
   }
 }

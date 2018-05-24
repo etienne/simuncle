@@ -1,5 +1,13 @@
+import 'phaser';
 import reset from 'reset-css';
 import './scss/styles.scss';
-import { Game } from './objects';
+import { Main } from './scenes';
 
-const game = new Game();
+var game = new Phaser.Game({
+  type: Phaser.AUTO,
+  parent: 'container',
+  width: 1920,
+  height: 1080,
+  scene: Main,
+  backgroundColor: 0x1b1862,
+});

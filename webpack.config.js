@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
@@ -19,7 +20,7 @@ module.exports = {
         }),
       },
       {
-        test: /\.(svg)$/,
+        test: /\.(svg|png)$/,
         use: "file-loader",
       },
       {
@@ -34,6 +35,10 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.DefinePlugin({
+      'CANVAS_RENDERER': JSON.stringify(true),
+      'WEBGL_RENDERER': JSON.stringify(true)
+    }),
     new BrowserSyncPlugin({
       host: 'localhost',
       open: false,
