@@ -31,16 +31,16 @@ export default class Main extends Phaser.Scene {
 
   create() {
     const background = this.add.image(0, 0, 'background');
-    const table = this.add.image(960, 540, 'table');
+    const table = this.add.image(960, 600, 'table');
     background.setOrigin(0);
     
     this.characters = {
-      'Cousin 1':  new Person(this, 'Cousin 1',  855,  280),
-      'Uncle':     new Person(this, 'Uncle',     1020, 280),
-      'Cousin 2':  new Person(this, 'Cousin 2',  1195, 280),
-      'Mom':       new Person(this, 'Mom',       735,  500, true),
-      'Player':    new Person(this, 'Player',    900,  500, true),
-      'Bystander': new Person(this, 'Bystander', 1065, 500, true),
+      'Cousin 1':  new Person(this, 'Cousin 1',  855,  340),
+      'Uncle':     new Person(this, 'Uncle',     1020, 340),
+      'Cousin 2':  new Person(this, 'Cousin 2',  1195, 340),
+      'Mom':       new Person(this, 'Mom',       735,  560, true),
+      'Player':    new Person(this, 'Player',    900,  560, true),
+      'Bystander': new Person(this, 'Bystander', 1065, 560, true),
     };
     this.startDialog('intro');
   }

@@ -2,7 +2,7 @@ import { TextBubble } from '.';
 
 export default class ActionBubble extends TextBubble {
   constructor(scene, text, slug, x, y, flipped, chooseCallback, dismissCallback) {
-    super(scene, text, slug, x, y, flipped, chooseCallback);
+    super(scene, text, slug, x, y, flipped, chooseCallback, 17 + 60 + 17);
     
     const backgroundHeight = 17 + 60 + 17;
     const buttonsBackground = scene.add.graphics().fillStyle(0x2C36A8).fillRect(0, this.height - backgroundHeight, this.width, backgroundHeight);
@@ -19,7 +19,7 @@ export default class ActionBubble extends TextBubble {
         this.remove();
       });
     } else {
-      dismissButton.setAlpha(0.4);
+      dismissButton.setAlpha(0.25);
     }
 
     chooseButton.on('pointerdown', () => {
