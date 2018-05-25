@@ -38,8 +38,7 @@ export default class Person extends GameObject {
   
   autoChoose(timedBubble) {
     if (this.textBubble) {
-      console.log('autochoose');
-      // this.textBubble.element.querySelector('button.choose').click(); // Ugh
+      this.textBubble.choose();
     } else {
       console.warn('Attempted to autoChoose but no ActionBubble is present');
     }

@@ -6,26 +6,29 @@ export default class ActionBubble extends TextBubble {
     
     const backgroundHeight = 17 + 60 + 17;
     const buttonsBackground = scene.add.graphics().fillStyle(0x2C36A8).fillRect(0, this.height - backgroundHeight, this.width, backgroundHeight);
-    const chooseButton = scene.add.image(this.width - 17 - 144 - 17, this.height - 17, 'chooseButton').setOrigin(1, 1).setInteractive();
-    const dismissButton = scene.add.image(this.width - 17, this.height - 17, 'dismissButton').setOrigin(1, 1).setInteractive();
-    this.container.add([buttonsBackground, chooseButton, dismissButton]);
+    this.chooseButton = scene.add.image(this.width - 17, this.height - 17, 'chooseButton').setOrigin(1, 1).setInteractive();
+    this.dismissButton = scene.add.image(this.width - 17 - 144 - 17, this.height - 17, 'dismissButton').setOrigin(1, 1).setInteractive();
+    this.container.add([buttonsBackground, this.chooseButton, this.dismissButton]);
     this.container.bringToTop(this.face);
+    this.chooseCallback = chooseCallback;
 
     if (dismissCallback) {
-      dismissButton.on('pointerdown', () => {
+      this.dismissButton.on('pointerdown', () => {
         setTimeout(() => {
           dismissCallback();
         }, 250);
         this.remove();
       });
     } else {
-      dismissButton.setAlpha(0.25);
+      this.dismissButton.setAlpha(0.25);
     }
 
-    chooseButton.on('pointerdown', () => {
-      chooseCallback();
-      this.remove();
-    });
+    this.chooseButton.on('pointerdown', this.choose, this);
+  }
+  
+  choose() {
+    this.chooseCallback();
+    this.remove();
   }
   
   handleCallback() {
