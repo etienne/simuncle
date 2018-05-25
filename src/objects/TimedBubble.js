@@ -1,7 +1,7 @@
 import { TextBubble } from '.';
 
 export default class TimedBubble extends TextBubble {
-  constructor(scene, text, slug, x, y, flipped, callback, timeLimit = 8000) {
+  constructor(scene, text, slug, x, y, flipped, callback, timeLimit = 12000) {
     super(scene, text, slug, x, y, flipped, callback);
     
     // Add timer
