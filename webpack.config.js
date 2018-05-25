@@ -20,7 +20,7 @@ module.exports = {
         }),
       },
       {
-        test: /\.(svg|png)$/,
+        test: /\.(woff|png)$/,
         use: "file-loader",
       },
       {
@@ -34,6 +34,7 @@ module.exports = {
       },
     ],
   },
+  devtool: 'source-map',
   plugins: [
     new webpack.DefinePlugin({
       'CANVAS_RENDERER': JSON.stringify(true),

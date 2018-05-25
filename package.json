@@ -28,6 +28,7 @@
     "webpack-cli": "^2.0.12"
   },
   "dependencies": {
-    "phaser": "3.9.0"
+    "phaser": "3.9.0",
+    "webfontloader": "1.6.28"
   }
 }

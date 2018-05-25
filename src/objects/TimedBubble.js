@@ -1,19 +1,26 @@
 import { TextBubble } from '.';
-import createElement from '../helpers/createElement';
 
 export default class TimedBubble extends TextBubble {
-  constructor(game, text, parentElement, callback, timeLimit = 8000) {
-    super(game, text, parentElement, callback);
+  constructor(scene, text, slug, x, y, flipped, callback, timeLimit = 8000) {
+    super(scene, text, slug, x, y, flipped, callback);
     
     // Add timer
-    const timer = createElement('div', 'timer');
-    this.element.appendChild(timer);
-    setTimeout(() => { timer.classList.toggle('active'); }, 0);
-    
-    // Automatically remove bubble once the timer is up
-    this.timeout = setTimeout(() => {
-      this.game.characters['Player'].autoChoose();
-    }, timeLimit);
+    const timerBackground = scene.add.graphics().fillStyle(0x262C90).fillRect(this.width, 0, 20, this.height);
+    const timer = scene.add.graphics().fillStyle(0x3D54ED).fillRect(this.width, 0, 20, this.height);
+    // const purpleTimer = scene.add.graphics().fillStyle(0x8D3662).fillRect(this.width, 0, 20, this.height).setAlpha(0);
+    // const redTimer = scene.add.graphics().fillStyle(0xFF5562).fillRect(this.width, 0, 20, this.height).setAlpha(0);
+    this.container.add([timerBackground, timer]);
+
+    const tween = scene.tweens.add({
+      targets: [timer],
+      scaleY: 0,
+      y: this.height,
+      // alpha: 1,
+      duration: timeLimit,
+      onComplete: () => {
+        this.scene.characters['Player'].autoChoose();
+      }
+    });
   }
   
   handleCallback() {
@@ -22,6 +29,5 @@ export default class TimedBubble extends TextBubble {
   
   remove() {
     super.remove();
-    clearTimeout(this.timeout);
   }
 }

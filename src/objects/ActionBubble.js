@@ -1,30 +1,31 @@
-import createElement from '../helpers/createElement';
 import { TextBubble } from '.';
 
 export default class ActionBubble extends TextBubble {
-  constructor(game, text, parentElement, chooseCallback, dismissCallback) {
-    super(game, text, parentElement, chooseCallback);
-    const dismissButton = createElement('button', 'dismiss');
-    const chooseButton = createElement('button', 'choose');
+  constructor(scene, text, slug, x, y, flipped, chooseCallback, dismissCallback) {
+    super(scene, text, slug, x, y, flipped, chooseCallback);
+    
+    const backgroundHeight = 17 + 60 + 17;
+    const buttonsBackground = scene.add.graphics().fillStyle(0x2C36A8).fillRect(0, this.height - backgroundHeight, this.width, backgroundHeight);
+    const chooseButton = scene.add.image(this.width - 17 - 144 - 17, this.height - 17, 'chooseButton').setOrigin(1, 1).setInteractive();
+    const dismissButton = scene.add.image(this.width - 17, this.height - 17, 'dismissButton').setOrigin(1, 1).setInteractive();
+    this.container.add([buttonsBackground, chooseButton, dismissButton]);
+    this.container.bringToTop(this.face);
 
     if (dismissCallback) {
-      dismissButton.onclick = () => {
+      dismissButton.on('pointerdown', () => {
         setTimeout(() => {
           dismissCallback();
         }, 250);
         this.remove();
-      }
+      });
     } else {
-      dismissButton.disabled = true;
+      dismissButton.setAlpha(0.4);
     }
 
-    chooseButton.onclick = () => {
+    chooseButton.on('pointerdown', () => {
       chooseCallback();
       this.remove();
-    }
-
-    this.element.appendChild(dismissButton);
-    this.element.appendChild(chooseButton);
+    });
   }
   
   handleCallback() {

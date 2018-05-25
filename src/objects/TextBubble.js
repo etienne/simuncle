@@ -2,24 +2,26 @@ import createElement from '../helpers/createElement';
 import { GameObject } from '.';
 
 export default class TextBubble extends GameObject {
-  constructor(scene, text, x, y, callback) {
+  constructor(scene, text, slug, x, y, flipped, callback) {
     super(scene);
-    const width = 780;
-    const height = 260;
+    this.width = 780;
+    this.height = 260;
     this.text = text;
     this.callback = callback;
 
-    this.container = scene.add.container(x - width / 2, y - height);
-    const graphics = scene.add.graphics().fillStyle(0x3240BF).fillRect(0, 0, width, height);
-    const face = scene.add.image(0, height, 'uncle').setOrigin(0, 1);
-    const triangle = scene.add.image(width / 2, height, 'triangle').setOrigin(0, 0);
-    const textObject = scene.add.text(310, 20, this.text, { fontFamily: 'Arial', fontSize: 27, color: '#E0ECDF' });
-    this.container.add(graphics);
-    this.container.add(face);
-    this.container.add(triangle);
-    this.container.add(textObject);
-    
-    this.boundClickCallback = this.clickCallback.bind(this);
+    this.container = scene.add.container(x - this.width / 2, y + (this.height * (flipped ? 1 : -1)));
+    const background = scene.add.graphics().fillStyle(0x3240BF).fillRect(0, 0, this.width, this.height);
+    this.face = scene.add.image(0, this.height, slug).setOrigin(0, 1);
+    const triangle = scene.add.image(this.width / 2, flipped ? 0 : this.height, 'triangle').setOrigin(0, 0).setAngle(flipped ? 180 : 0);
+    const textObject = scene.add.text(320, 36, this.text, {
+      fontFamily: 'Nunito Sans',
+      fontSize: 27,
+      color: '#E0ECDF',
+      wordWrap: { width: 420 },
+      baselineX: 10,
+      lineSpacing: 6,
+    });
+    this.container.add([background, this.face, triangle, textObject]);
     this.handleCallback();
   }
   
@@ -29,13 +31,11 @@ export default class TextBubble extends GameObject {
   }
   
   handleCallback() {
-    this.game.stage.addEventListener('mousedown', this.boundClickCallback);
-    this.game.stage.classList.add('clickable');
+    this.scene.input.on('pointerdown', this.clickCallback, this);
   }
   
   remove() {
-    this.element.parentNode.removeChild(this.element);
-    this.game.stage.removeEventListener('mousedown', this.boundClickCallback);
-    this.game.stage.classList.remove('clickable');
+    this.scene.input.off('pointerdown', this.clickCallback, this);
+    this.container.destroy();
   }
 }
