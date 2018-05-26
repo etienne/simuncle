@@ -1,8 +1,18 @@
-@import 'Person';
-@import 'Player';
-@import 'Stage';
-@import 'TextBubble';
+@import 'fonts';
+
+html, body {
+  height: 100%;
+}
 
 body {
-  background-color: gray;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#container {
+  canvas {
+    max-width: 100%;
+  }
 }

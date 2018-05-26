@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
@@ -19,7 +20,7 @@ module.exports = {
         }),
       },
       {
-        test: /\.(svg)$/,
+        test: /\.(woff|png)$/,
         use: "file-loader",
       },
       {
@@ -33,7 +34,12 @@ module.exports = {
       },
     ],
   },
+  // devtool: 'source-map',
   plugins: [
+    new webpack.DefinePlugin({
+      'CANVAS_RENDERER': JSON.stringify(true),
+      'WEBGL_RENDERER': JSON.stringify(true)
+    }),
     new BrowserSyncPlugin({
       host: 'localhost',
       open: false,
