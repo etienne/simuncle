@@ -2,6 +2,8 @@ import 'phaser';
 import Papa from 'papaparse';
 import { Person } from '../objects';
 import dialogs from '../dialogs';
+import title from '../assets/images/title.png';
+import start from '../assets/images/start.png';
 import background from '../assets/images/background.png';
 import cousin1 from '../assets/images/cousin1.png';
 import cousin2 from '../assets/images/cousin2.png';
@@ -17,6 +19,8 @@ import shuffle from '../helpers/shuffle';
 export default class Main extends Phaser.Scene {
   preload() {
     this.queue = [];
+    this.load.image('title', title);
+    this.load.image('start', start);
     this.load.image('background', background);
     this.load.image('cousin1', cousin1);
     this.load.image('cousin2', cousin2);
@@ -32,6 +36,8 @@ export default class Main extends Phaser.Scene {
   create() {
     const background = this.add.image(0, 0, 'background');
     const table = this.add.image(960, 600, 'table');
+    const title = this.add.image(960, 200, 'title').setAlpha(0);
+    const start = this.add.image(960, 925, 'start').setAlpha(0).setInteractive();
     background.setOrigin(0);
     
     this.characters = {
@@ -42,7 +48,21 @@ export default class Main extends Phaser.Scene {
       'Player':    new Person(this, 'Player',    900,  560, true),
       'Bystander': new Person(this, 'Bystander', 1065, 560, true),
     };
-    this.startDialog('intro');
+    
+    const tween = this.tweens.add({
+      targets: [title, start],
+      alpha: 1,
+      duration: 500,
+    });
+    
+    start.on('pointerdown', () => {
+      this.tweens.add({
+        targets: [title, start],
+        alpha: 0,
+        duration: 500,
+        onComplete: () => { this.startDialog('intro'); },
+      });
+    });
   }
   
   startDialog(name) {
@@ -89,6 +109,8 @@ export default class Main extends Phaser.Scene {
       } else {
         event.event();
       }
+    } else {
+      this.scene.restart();
     }
   }
 }
