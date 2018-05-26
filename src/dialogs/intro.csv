@@ -1,15 +1,23 @@
 person,text,branch
-Cousin 1,"Hey, it's been a minute! Glad you were able to pull yourself away from your books long enough to join us. ",
-Cousin 2,"Yeah well, I couldn't miss Uncle's sweet potatoes. What are you doing here? I thought you were moving this weekend. ",
-Cousin 1,We borrowed a friend's truck and got everything done yesterday.,
-Uncle,Your mom was telling me that school is going well. I'm glad to hear that. I know you were having a hard time last semester. ,school
-Uncle,Sounds like you've been working hard! Must run in the family.,
-Uncle,"Seems like you're not living in the best neighbourhood, though. You feel safe walking around at night in that part of town...?",neighbourhood
+Uncle,"I'll have some more of that salad, please.",
+Mom,Here you go.,
+Uncle,Thanks. So did I tell you about that documentary I watched yesterday?,
+Cousin 2,Huh oh. Look at his face. That usually means a terrible joke is coming.,
+Uncle,It was this fascinating documentary about beavers. It was the best dam movie I’d ever seen!,
+Cousin 2,Oh God.,
+Cousin 1,Hahaha!,
+Cousin 2,"Please, don’t encourage him!",
+Player,"Your jokes aren’t getting any better, Uncle, but I gotta say, your sweet potatoes are even more delightful than usual.",
+Uncle,I put extra care because it’s the only way to get you to come visit us down here!,potatoes
+Player,Hahaha!,
+Uncle,"But seriously, I'm glad you could come. I know it's not great getting here by bus coming from all the way up there.",
+Player,It really isn't so bad. I just have to think to bring a book.,
+Uncle,"Yeah, I wasn't thinking so much of that. Let's just say you're not living in the best neighbourhood. You feel safe walking around at night in that part of town...?",neighbourhood
 Uncle,All I'm saying is that I care about your safety and wouldn't want you to end up in the wrong place at the wrong time. ,
 Mom,"Would you give it a rest, you two?",
-Cousin 1,"Yeah, seriously",
+Cousin 1,"Yeah, seriously.",
 Cousin 2,...,
-Cousin 2,"This turkey is really good, Aunty. ",
+Cousin 2,"This turkey is really good, Auntie.",
 Mom,Well thank you very much. I was worried it was too dry. ,
 Cousin 2,"So, how is your fall going so far, Uncle?",
 Uncle,"Well, you know. I'm still looking for work. It's not easy. There's a lot more competition than there used to be in my line of work. ",

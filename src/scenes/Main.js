@@ -66,15 +66,15 @@ export default class Main extends Phaser.Scene {
   }
   
   startDialog(name) {
-    const docId = '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg';
-    Papa.parse(`https://docs.google.com/spreadsheets/d/${docId}/gviz/tq?tqx=out:csv&sheet=${name}`, {
-      download: true,
-      header: true,
-      complete: results => {
+    // const docId = '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg';
+    // Papa.parse(`https://docs.google.com/spreadsheets/d/${docId}/gviz/tq?tqx=out:csv&sheet=${name}`, {
+    //   download: true,
+    //   header: true,
+    //   complete: results => {
         // console.log(results);
         
-        // const dialog = dialogs[name];
-        const dialog = results.data;
+        const dialog = dialogs[name];
+        // const dialog = results.data;
     
         for (let i = 0; i < dialog.length; i++) {
           const line = dialog[i];
@@ -92,8 +92,8 @@ export default class Main extends Phaser.Scene {
           }
         }
         this.advanceQueue();
-      }
-    });
+      // }
+    // });
   }
   
   enqueueEvent(event, delay) {
