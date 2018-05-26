@@ -24,7 +24,18 @@ export default class TextBubble extends GameObject {
     this.face = scene.add.image(0, this.height, slug).setOrigin(0, 1);
     const triangle = scene.add.image(this.width / 2, flipped ? 0 : this.height, 'triangle').setOrigin(0, 0).setAngle(flipped ? 180 : 0);
     this.container.add([background, this.face, triangle, textObject]);
-    this.handleCallback();
+    this.container.alpha = 0;
+    
+    const animationOffset = 30;
+    this.container.y = this.container.y + ((flipped ? 1 : -1) * animationOffset);
+    this.scene.tweens.add({
+      targets: [this.container],
+      alpha: 1,
+      y: `${flipped ? '-' : '+'}=${animationOffset}`,
+      duration: 300,
+      ease: 'Quad.easeOut',
+      onComplete: this.handleCallback.bind(this),
+    });
   }
   
   clickCallback() {
