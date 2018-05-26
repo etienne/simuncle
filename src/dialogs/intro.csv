@@ -1,7 +1,10 @@
 person,text,branch
 Uncle,"I'll have some more of that salad, please.",
 Mom,Here you go.,
-Uncle,Thanks. So did I tell you about that documentary I watched yesterday?,
+Uncle,Thanks!,
+Uncle,"Come to think of it, it's kinda weird that you gave me salad without actually moving. What's up with that?",
+Mom,"Oh, that's because this game is an early prototype. Some things won't work right, and it's really incomplete.",
+Uncle,"That explains it. So anyway, did I tell you about that documentary I watched yesterday?",
 Cousin 2,Huh oh. Look at his face. That usually means a terrible joke is coming.,
 Uncle,It was this fascinating documentary about beavers. It was the best dam movie I’d ever seen!,
 Cousin 2,Oh God.,
