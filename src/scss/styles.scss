@@ -1,7 +1,14 @@
 @import 'fonts';
 
+html, body {
+  height: 100%;
+}
+
 body {
   background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #container {
