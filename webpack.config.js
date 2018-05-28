@@ -1,6 +1,9 @@
+const path = require('path');
 const webpack = require('webpack');
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const SpritesmithPlugin = require('webpack-spritesmith');
 
 module.exports = {
   module: {
@@ -20,7 +23,7 @@ module.exports = {
         }),
       },
       {
-        test: /\.(woff|png)$/,
+        test: /\.woff$/,
         use: "file-loader",
       },
       {
@@ -48,6 +51,22 @@ module.exports = {
       server: { baseDir: ['dist'] },
       ui: false,
     }),
+    new CopyWebpackPlugin(['assets/index.html']),
     new ExtractTextPlugin("styles.css"),
+    new SpritesmithPlugin({
+      src: {
+        cwd: path.resolve(__dirname, 'assets/images/atlas'),
+        glob: '**/*.png',
+      },
+      target: {
+        image: path.resolve(__dirname, 'dist/atlas.png'),
+        css: [[path.resolve(__dirname, 'dist/atlas.json'), {
+          format: 'json_texture'
+        }]],
+      },
+      spritesmithOptions: {
+        padding: 2,
+      }
+    }),
   ]
 };

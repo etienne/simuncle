@@ -1,43 +1,20 @@
 import 'phaser';
 import Papa from 'papaparse';
 import { Person } from '../objects';
-import dialogs from '../dialogs';
-import title from '../assets/images/title.png';
-import start from '../assets/images/start.png';
-import background from '../assets/images/background.png';
-import cousin1 from '../assets/images/cousin1.png';
-import cousin2 from '../assets/images/cousin2.png';
-import mom from '../assets/images/mom.png';
-import player from '../assets/images/player.png';
-import table from '../assets/images/table.png';
-import triangle from '../assets/images/triangle.png';
-import uncle from '../assets/images/uncle.png';
-import chooseButton from '../assets/images/chooseButton.png';
-import dismissButton from '../assets/images/dismissButton.png';
+import dialogs from '../../assets/dialogs';
 import shuffle from '../helpers/shuffle';
 
 export default class Main extends Phaser.Scene {
   preload() {
     this.queue = [];
-    this.load.image('title', title);
-    this.load.image('start', start);
-    this.load.image('background', background);
-    this.load.image('cousin1', cousin1);
-    this.load.image('cousin2', cousin2);
-    this.load.image('mom', mom);
-    this.load.image('player', player);
-    this.load.image('table', table);
-    this.load.image('triangle', triangle);
-    this.load.image('uncle', uncle);
-    this.load.image('chooseButton', chooseButton);
-    this.load.image('dismissButton', dismissButton);
+    this.load.atlas('atlas', 'atlas.png', 'atlas.json');
   }
 
   create() {
-    const background = this.add.image(0, 0, 'background');
-    const table = this.add.image(960, 600, 'table');
-    const title = this.add.image(960, 200, 'title').setAlpha(0);
-    const start = this.add.image(960, 925, 'start').setAlpha(0).setInteractive();
+    const background = this.add.image(0, 0, 'atlas', 'background');
+    const table = this.add.image(960, 600, 'atlas', 'table');
+    const title = this.add.image(960, 200, 'atlas', 'title').setAlpha(0);
+    const start = this.add.image(960, 925, 'atlas', 'start').setAlpha(0).setInteractive();
     background.setOrigin(0);
     
     this.characters = {

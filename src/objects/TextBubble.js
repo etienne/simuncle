@@ -21,8 +21,8 @@ export default class TextBubble extends GameObject {
 
     this.container = scene.add.container(x - this.width / 2, flipped ? y + 100 : y - this.height);
     const background = scene.add.graphics().fillStyle(0x3240BF).fillRect(0, 0, this.width, this.height);
-    this.face = scene.add.image(0, this.height, slug).setOrigin(0, 1);
-    const triangle = scene.add.image(this.width / 2, flipped ? 0 : this.height, 'triangle').setOrigin(0, 0).setAngle(flipped ? 180 : 0);
+    this.face = scene.add.image(0, this.height, 'atlas', slug).setOrigin(0, 1);
+    const triangle = scene.add.image(this.width / 2, flipped ? 0 : this.height, 'atlas', 'triangle').setOrigin(0, 0).setAngle(flipped ? 180 : 0);
     this.container.add([background, this.face, triangle, textObject]);
     this.container.alpha = 0;
     

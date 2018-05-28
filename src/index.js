@@ -1,6 +1,6 @@
 import 'phaser';
 import reset from 'reset-css';
-import './scss/styles.scss';
+import '../assets/scss/styles.scss';
 import { Main } from './scenes';
 
 var game = new Phaser.Game({
