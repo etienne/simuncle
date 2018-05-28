@@ -9,6 +9,7 @@ export default class Main extends Phaser.Scene {
     this.dialogs = {};
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
     this.loadDialogs('intro');
+    this.peace = 100;
   }
 
   create() {
@@ -20,11 +21,11 @@ export default class Main extends Phaser.Scene {
     
     this.characters = {
       'Cousin 1':  new Person(this, 'Cousin 1',  855,  340),
-      'Uncle':     new Person(this, 'Uncle',     1020, 340),
+      'Uncle':     new Person(this, 'Uncle',     1025, 340),
       'Cousin 2':  new Person(this, 'Cousin 2',  1195, 340),
-      'Mom':       new Person(this, 'Mom',       735,  560, true),
-      'Player':    new Person(this, 'Player',    900,  560, true),
-      'Bystander': new Person(this, 'Bystander', 1065, 560, true),
+      'Mom':       new Person(this, 'Mom',       735,  490, true),
+      'Player':    new Person(this, 'Player',    905,  490, true),
+      'Bystander': new Person(this, 'Bystander', 1075, 490, true),
     };
     
     const tween = this.tweens.add({
@@ -104,5 +105,9 @@ export default class Main extends Phaser.Scene {
     } else {
       this.scene.restart();
     }
+  }
+  
+  damagePeace(peace) {
+    this.peace -= peace;
   }
 }
