@@ -1,13 +1,14 @@
 import 'phaser';
 import Papa from 'papaparse';
 import { Person } from '../objects';
-import dialogs from '../../assets/dialogs';
 import shuffle from '../helpers/shuffle';
 
 export default class Main extends Phaser.Scene {
   preload() {
     this.queue = [];
+    this.dialogs = {};
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
+    this.loadDialogs('intro');
   }
 
   create() {
@@ -42,35 +43,49 @@ export default class Main extends Phaser.Scene {
     });
   }
   
-  startDialog(name) {
-    // const docId = '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg';
-    // Papa.parse(`https://docs.google.com/spreadsheets/d/${docId}/gviz/tq?tqx=out:csv&sheet=${name}`, {
-    //   download: true,
-    //   header: true,
-    //   complete: results => {
-        // console.log(results);
-        
-        const dialog = dialogs[name];
-        // const dialog = results.data;
-    
-        for (let i = 0; i < dialog.length; i++) {
-          const line = dialog[i];
-          this.enqueueEvent(() => {
-            this.characters[line.person].say(line.text, line.branch, this.advanceQueue.bind(this));
+  loadDialogs(entryPoint) {
+    this.fetchDialog(entryPoint, dialog => {
+      this.dialogs[entryPoint] = dialog;
+      
+      dialog.map(line => {
+        if (line.branch) {
+          this.fetchDialog(line.branch, branch => {
+            this.dialogs[line.branch] = branch;
           });
-
-          if (line.branch) {
-            const branchLines = dialogs[`branch_${line.branch}`];
-            shuffle(branchLines);
-
-            this.enqueueEvent(() => {
-              this.characters['Player'].choose(branchLines, this.advanceQueue.bind(this), this.characters['Uncle']);
-            });
-          }
         }
-        this.advanceQueue();
-      // }
-    // });
+      });
+    });
+  }
+  
+  startDialog(name) {
+    const dialog = this.dialogs[name];
+    for (let i = 0; i < dialog.length; i++) {
+      const line = dialog[i];
+      this.enqueueEvent(() => {
+        this.characters[line.person].say(line.text, line.branch, this.advanceQueue.bind(this));
+      });
+
+      if (line.branch) {
+        const branchLines = this.dialogs[line.branch];
+        shuffle(branchLines);
+
+        this.enqueueEvent(() => {
+          this.characters['Player'].choose(branchLines, this.advanceQueue.bind(this), this.characters['Uncle']);
+        });
+      }
+    }
+    this.advanceQueue();
+  }
+  
+  fetchDialog(name, callback) {
+    const docId = '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg';
+    Papa.parse(`https://docs.google.com/spreadsheets/d/${docId}/gviz/tq?tqx=out:csv&sheet=${name}`, {
+      download: true,
+      header: true,
+      complete: results => {
+        callback(results.data);
+      },
+    });
   }
   
   enqueueEvent(event, delay) {
