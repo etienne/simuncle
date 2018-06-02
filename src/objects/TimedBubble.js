@@ -1,7 +1,7 @@
 import { TextBubble } from '.';
 
 export default class TimedBubble extends TextBubble {
-  constructor(scene, text, slug, x, y, flipped, callback, timeLimit = 18000) {
+  constructor(scene, text, slug, x, y, flipped, callback, timeLimit = 6000) {
     super(scene, text, slug, x, y, flipped, callback);
     
     // Add timer
@@ -18,7 +18,7 @@ export default class TimedBubble extends TextBubble {
         alpha: { value: 1, duration: timeLimit * 0.05, delay: timeLimit * 0.6 },
       },
       onComplete: () => {
-        this.scene.characters['Player'].autoChoose();
+        this.scene.characters['Player'].sayNothing();
       }
     });
   }

@@ -2,14 +2,15 @@ import 'phaser';
 import Papa from 'papaparse';
 import { Person } from '../objects';
 import shuffle from '../helpers/shuffle';
+import locationQuery from '../helpers/locationQuery';
 
 export default class Main extends Phaser.Scene {
   preload() {
     this.queue = [];
     this.dialogs = {};
+    this.peace = 100;
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
     this.loadDialogs('intro');
-    this.peace = 100;
   }
 
   create() {
@@ -75,6 +76,12 @@ export default class Main extends Phaser.Scene {
         });
       }
     }
+    
+    if (locationQuery.skip > 0) {
+      console.warn(`Skipping ${locationQuery.skip} events from beginning of queue`);
+      this.queue.splice(0, locationQuery.skip);
+    }
+    
     this.advanceQueue();
   }
   
@@ -93,6 +100,10 @@ export default class Main extends Phaser.Scene {
     this.queue.push({ event, delay });
   }
   
+  prequeueEvent(event, delay) {
+    this.queue.unshift({ event, delay });
+  }
+  
   advanceQueue() {
     const event = this.queue.shift();
     
@@ -105,6 +116,20 @@ export default class Main extends Phaser.Scene {
     } else {
       this.scene.restart();
     }
+  }
+  
+  handleDamage(line) {
+    if (line.player > 0) {
+      this.characters['Player'].damage(line.player);
+    }
+    if (line.uncle > 0) {
+      this.characters['Uncle'].damage(line.uncle);
+    }
+    if (line.peace > 0) {
+      this.damagePeace(line.peace);
+    }
+    
+    setTimeout(this.advanceQueue.bind(this), 2000);
   }
   
   damagePeace(peace) {

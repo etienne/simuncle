@@ -1,7 +1,7 @@
 {
   "name": "simmononcle",
   "version": "0.0.1",
-  "description": "A family dinner with your racist uncle simulator.",
+  "description": "A family dinner with your slightly racist uncle.",
   "main": "src/index.js",
   "scripts": {
     "build": "webpack --mode production",
@@ -12,9 +12,11 @@
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.4",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "browser-sync": "^2.23.6",
     "browser-sync-webpack-plugin": "^2.2.1",
+    "copy-webpack-plugin": "4.5.1",
     "css-loader": "^0.28.11",
     "csv-loader": "^2.1.1",
     "extract-text-webpack-plugin": "^v4.0.0-alpha.0",
@@ -29,7 +31,6 @@
     "webpack-spritesmith": "0.4.1"
   },
   "dependencies": {
-    "copy-webpack-plugin": "4.5.1",
     "phaser": "3.9.0",
     "webfontloader": "1.6.28"
   }

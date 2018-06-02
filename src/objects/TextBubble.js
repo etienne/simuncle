@@ -1,4 +1,3 @@
-import createElement from '../helpers/createElement';
 import { GameObject } from '.';
 
 export default class TextBubble extends GameObject {

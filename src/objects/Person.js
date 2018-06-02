@@ -1,4 +1,3 @@
-import createElement from '../helpers/createElement';
 import { ActionBubble, GameObject, TextBubble, TimedBubble } from '.';
 
 export default class Person extends GameObject {
@@ -43,39 +42,22 @@ export default class Person extends GameObject {
   
   choose(branch, callback) {
     const line = branch.shift();
-    const player = this.scene.characters['Player'];
     const uncle = this.scene.characters['Uncle'];
 
     const chooseCallback = () => {
       uncle.textBubble.remove();
       
-      const callbackWithDamage = () => {
-        let willDamage = false;
-        if (line.player > 0) {
-          willDamage = true;
-          player.damage(line.player);
-        }
-        if (line.uncle > 0) {
-          willDamage = true;
-          uncle.damage(line.uncle);
-        }
-        if (line.peace > 0) {
-          this.scene.damagePeace(line.peace);
-        }
-        
-        if (willDamage) {
-          setTimeout(callback, 2000);
-        } else {
-          callback();
-        }
-      };
+      if (line.player > 0 || line.uncle > 0 || line.peace > 0) {
+        this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, line));
+      }
       
       if (line.reaction && line.reaction !== ' ') {
-        uncle.say(line.reaction, null, callbackWithDamage);
+        uncle.say(line.reaction, null, this.scene.advanceQueue.bind(this.scene));
       } else {
-        callbackWithDamage();
+        this.scene.advanceQueue();
       }
     };
+    
     const dismissCallback = branch.length
       ? () => { this.choose(branch, callback); }
       : null;
@@ -83,11 +65,10 @@ export default class Person extends GameObject {
     this.textBubble = new ActionBubble(this.scene, line.response, this.slug, this.x, this.y, this.flipped, chooseCallback, dismissCallback);
   }
   
-  autoChoose(timedBubble) {
-    if (this.textBubble) {
-      this.textBubble.choose();
-    } else {
-      console.warn('Attempted to autoChoose but no ActionBubble is present');
-    }
+  sayNothing() {
+    this.scene.characters['Uncle'].textBubble.remove();
+    this.textBubble.remove();
+    this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, { player: 20 }));
+    this.say('…', null, this.scene.advanceQueue.bind(this.scene));
   }
 }
