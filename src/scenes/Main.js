@@ -72,7 +72,7 @@ export default class Main extends Phaser.Scene {
         shuffle(branchLines);
 
         this.enqueueEvent(() => {
-          this.characters['Player'].choose(branchLines, this.advanceQueue.bind(this), this.characters['Uncle']);
+          this.characters['Player'].choose(branchLines, this.advanceQueue.bind(this));
         });
       }
     }

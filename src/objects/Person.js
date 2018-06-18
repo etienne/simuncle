@@ -13,6 +13,7 @@ export default class Person extends GameObject {
     this.energyLevel = scene.add.image(6, 6, 'atlas', 'energyLevel').setOrigin(0);
     this.energyBar = scene.add.container(x - 122 / 2, y).setAlpha(0);
     this.energyBar.add([energyBackground, this.energyLevel]);
+    this.dots = scene.add.container(0, 1040);
   }
   
   damage(energy) {
@@ -40,12 +41,13 @@ export default class Person extends GameObject {
       : new TextBubble(this.scene, text, this.slug, this.x, this.y, this.flipped, callback);
   }
   
-  choose(branch, callback) {
-    const line = branch.shift();
+  choose(branch, callback, index = 0) {
+    const line = branch[index];
     const uncle = this.scene.characters['Uncle'];
 
     const chooseCallback = () => {
       uncle.textBubble.remove();
+      this.dots.removeAll();
       
       if (line.player > 0 || line.uncle > 0 || line.peace > 0) {
         this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, line));
@@ -58,16 +60,44 @@ export default class Person extends GameObject {
       }
     };
     
-    const dismissCallback = branch.length
-      ? () => { this.choose(branch, callback); }
+    const dismissCallback = index < branch.length - 1
+      ? () => {
+        this.choose(branch, callback, index + 1);
+      }
       : null;
 
     this.textBubble = new ActionBubble(this.scene, line.response, this.slug, this.x, this.y, this.flipped, chooseCallback, dismissCallback);
+    
+    // Draw dots
+    this.dots.removeAll();
+    const dotOffset = 40;
+    for (let i = 0; i < branch.length; i++) {
+      const image = i < index ? 'x' : 'dot';
+      const dot = this.scene.add.image(i * dotOffset, 0, 'atlas', image);
+      
+      if (image == 'dot') {
+        dot.setScale(0.5, 0.5);
+      }
+      
+      if (i == index) {
+        this.scene.tweens.add({
+          targets: dot,
+          scaleX: 1,
+          scaleY: 1,
+          duration: 300,
+          ease: 'Power2',
+        });
+      }
+      
+      this.dots.add(dot);
+    }
+    this.dots.x = 1920 / 2 - ((branch.length * dotOffset) / 2);
   }
   
   sayNothing() {
     this.scene.characters['Uncle'].textBubble.remove();
     this.textBubble.remove();
+    this.dots.removeAll();
     this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, { player: 20 }));
     this.say('…', null, this.scene.advanceQueue.bind(this.scene));
   }
