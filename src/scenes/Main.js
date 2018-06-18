@@ -10,14 +10,50 @@ export default class Main extends Phaser.Scene {
     this.dialogs = {};
     this.peace = 100;
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
+    this.languages = {
+      fr: {
+        label: 'Français',
+        docId: '1iNtlDj6pGagYj4k8Ua8JpORRRt6wxVf-cqGxYnrmAn8',
+        start: 'Commencer',
+      },
+      en: {
+        label: 'English',
+        docId: '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg',
+        start: 'Start',
+      },
+    },
+    this.currentLanguage = localStorage.getItem('language') || 'fr';
     this.loadDialogs('intro');
+    this.defaultTextSettings = {
+      fontFamily: 'Nunito Sans',
+      fontSize: 27,
+      color: '#E0ECDF',
+      baselineX: 10,
+      lineSpacing: 6,
+    };
   }
 
   create() {
     const background = this.add.image(0, 0, 'atlas', 'background');
     const table = this.add.image(960, 600, 'atlas', 'table');
-    const title = this.add.image(960, 200, 'atlas', 'title').setAlpha(0);
-    const start = this.add.image(960, 925, 'atlas', 'start').setAlpha(0).setInteractive();
+    const title = this.add.image(960, 200, 'atlas', `title_${this.currentLanguage}`).setAlpha(0);
+    const startBorder = this.add.image(0, 0, 'atlas', 'buttonBorder');
+    const startText = this.add.text(0, -16, this.languages[this.currentLanguage].start, this.defaultTextSettings);
+    startText.x = -startText.width / 2;
+    const start = this.add.container(960, 925).setAlpha(0).setSize(startBorder.width, startBorder.height).setInteractive();
+    start.add([startText, startBorder]);
+    const otherLanguage = this.currentLanguage === 'en' ? 'fr' : 'en';
+    const languageSwitch = this.add.text(0, 25, this.languages[otherLanguage].label, {
+      ...this.defaultTextSettings,
+      fontSize: 20,
+    }).setInteractive();
+    languageSwitch.x = 1920 - languageSwitch.width - 32;
+
+    languageSwitch.on('pointerdown', () => {
+      localStorage.setItem('language', otherLanguage);
+      this.scene.restart();
+    });
+
     background.setOrigin(0);
     
     this.characters = {
@@ -37,10 +73,10 @@ export default class Main extends Phaser.Scene {
     
     start.on('pointerdown', () => {
       this.tweens.add({
-        targets: [title, start],
+        targets: [title, start, languageSwitch],
         alpha: 0,
         duration: 500,
-        onComplete: () => { this.startDialog('intro'); },
+        onComplete: () => this.startDialog('intro'),
       });
     });
   }
@@ -86,7 +122,7 @@ export default class Main extends Phaser.Scene {
   }
   
   fetchDialog(name, callback) {
-    const docId = '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg';
+    const docId = this.languages[this.currentLanguage].docId;
     Papa.parse(`https://docs.google.com/spreadsheets/d/${docId}/gviz/tq?tqx=out:csv&sheet=${name}`, {
       download: true,
       header: true,

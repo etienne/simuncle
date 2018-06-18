@@ -9,12 +9,8 @@ export default class TextBubble extends GameObject {
 
     this.width = Math.min(900, Math.round(string.length * 1.5) + 580);
     this.text = scene.add.text(320, 36, this.string, {
-      fontFamily: 'Nunito Sans',
-      fontSize: 27,
-      color: '#E0ECDF',
+      ...scene.defaultTextSettings,
       wordWrap: { width: this.width - 360 },
-      baselineX: 10,
-      lineSpacing: 6,
     });
     this.height = Math.max(260, this.text.height + 36 + 36 + heightAdjustment);
 
