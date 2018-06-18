@@ -13,7 +13,7 @@ export default class Person extends GameObject {
     this.energyLevel = scene.add.image(6, 6, 'atlas', 'energyLevel').setOrigin(0);
     this.energyBar = scene.add.container(x - 122 / 2, y).setAlpha(0);
     this.energyBar.add([energyBackground, this.energyLevel]);
-    this.dots = scene.add.container(0, 1040);
+    this.dots = scene.add.container(0, 1100);
   }
   
   damage(energy) {
@@ -47,7 +47,7 @@ export default class Person extends GameObject {
 
     const chooseCallback = () => {
       uncle.textBubble.remove();
-      this.dots.removeAll();
+      this.slideOutDots();
       
       if (line.player > 0 || line.uncle > 0 || line.peace > 0) {
         this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, line));
@@ -69,7 +69,12 @@ export default class Person extends GameObject {
     this.textBubble = new ActionBubble(this.scene, line.response, this.slug, this.x, this.y, this.flipped, chooseCallback, dismissCallback);
     
     // Draw dots
-    this.dots.removeAll();
+    if (this.dots.list.length) {
+      this.dots.removeAll();
+    } else {
+      this.slideInDots();
+    }
+    
     const dotOffset = 40;
     for (let i = 0; i < branch.length; i++) {
       const image = i < index ? 'x' : 'dot';
@@ -94,10 +99,30 @@ export default class Person extends GameObject {
     this.dots.x = 1920 / 2 - ((branch.length * dotOffset) / 2);
   }
   
+  slideInDots() {
+    console.log('slideInDots');
+    this.scene.tweens.add({
+      targets: this.dots,
+      y: '-=60',
+      duration: 600,
+      ease: 'Power2',
+    });
+  }
+  
+  slideOutDots() {
+    this.scene.tweens.add({
+      targets: this.dots,
+      y: '+=60',
+      duration: 200,
+      ease: 'Cubic.In',
+      onComplete: () => this.dots.removeAll(),
+    });
+  }
+  
   sayNothing() {
     this.scene.characters['Uncle'].textBubble.remove();
     this.textBubble.remove();
-    this.dots.removeAll();
+    this.slideOutDots();
     this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, { player: 20 }));
     this.say('…', null, this.scene.advanceQueue.bind(this.scene));
   }
