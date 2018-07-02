@@ -9,30 +9,7 @@ export default class Person extends GameObject {
     this.x = x;
     this.y = y;
     this.flipped = flipped;
-    const energyBackground = scene.add.image(0, 0, 'atlas', 'energyBackground').setOrigin(0);
-    this.energyLevel = scene.add.image(6, 6, 'atlas', 'energyLevel').setOrigin(0);
-    this.energyBar = scene.add.container(x - 122 / 2, y).setAlpha(0);
-    this.energyBar.add([energyBackground, this.energyLevel]);
     this.dots = scene.add.container(0, 1100);
-  }
-  
-  damage(energy) {
-    this.energy -= energy;
-    this.scene.tweens.add({
-      targets: this.energyBar,
-      alpha: 1,
-      duration: 300,
-      ease: 'Power2',
-      yoyo: true,
-      hold: 1300,
-    });
-    this.scene.tweens.add({
-      targets: this.energyLevel,
-      scaleX: this.energy / 100,
-      delay: 300,
-      duration: 500,
-      ease: 'Power2',
-    });
   }
   
   say(text, branch, callback) {
@@ -48,10 +25,7 @@ export default class Person extends GameObject {
     const chooseCallback = () => {
       uncle.textBubble.remove();
       this.slideOutDots();
-      
-      if (line.player > 0 || line.uncle > 0 || line.peace > 0) {
-        this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, line));
-      }
+      this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, line));
       
       if (line[this.scene.reactionField] && line[this.scene.reactionField] !== ' ') {
         uncle.say(line[this.scene.reactionField], null, this.scene.advanceQueue.bind(this.scene));
