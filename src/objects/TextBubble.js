@@ -6,7 +6,7 @@ export default class TextBubble extends GameObject {
     this.string = string;
     this.callback = callback;
     this.flipped = flipped;
-
+    
     this.width = Math.min(900, Math.round(string.length * 1.5) + 580);
     this.text = scene.add.text(320, 36, this.string, {
       ...scene.defaultTextSettings,

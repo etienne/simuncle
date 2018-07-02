@@ -6,23 +6,14 @@ import locationQuery from '../helpers/locationQuery';
 
 export default class Main extends Phaser.Scene {
   preload() {
+    this.googleDocId = '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg';
     this.queue = [];
     this.dialogs = {};
     this.peace = 100;
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
-    this.languages = {
-      fr: {
-        label: 'Français',
-        docId: '1iNtlDj6pGagYj4k8Ua8JpORRRt6wxVf-cqGxYnrmAn8',
-        start: 'Commencer',
-      },
-      en: {
-        label: 'English',
-        docId: '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg',
-        start: 'Start',
-      },
-    },
+    ['config', 'strings'].map(key => this.load.text(key, this.getGoogleSheetURL(`_${key}`)));
     this.currentLanguage = localStorage.getItem('language') || 'fr';
+    ['text', 'response', 'reaction'].map(field => this[`${field}Field`] = `${field}_${this.currentLanguage}`);
     this.loadDialogs('intro');
     this.defaultTextSettings = {
       fontFamily: 'Nunito Sans',
@@ -34,16 +25,32 @@ export default class Main extends Phaser.Scene {
   }
 
   create() {
+    // Parse config
+    this.config = {};
+    this.parseCSV(this.cache.text.get('config')).map(config => {
+      const isArray = ['languages', 'stats'].indexOf(config.key) !== -1;
+      this.config[config.key] = isArray ? config.value.split(',') : config.value;
+    });
+    
+    // Parse strings
+    this.strings = {};
+    this.config.languages.map(language => this.strings[language] = {});
+    this.parseCSV(this.cache.text.get('strings')).map(string => {
+      this.config.languages.map(language => {
+        this.strings[language][string.key] = string[language];
+      });
+    });
+
     const background = this.add.image(0, 0, 'atlas', 'background');
     const table = this.add.image(960, 600, 'atlas', 'table');
     const title = this.add.image(960, 200, 'atlas', `title_${this.currentLanguage}`).setAlpha(0);
     const startBorder = this.add.image(0, 0, 'atlas', 'buttonBorder');
-    const startText = this.add.text(0, -16, this.languages[this.currentLanguage].start, this.defaultTextSettings);
+    const startText = this.add.text(0, -16, this.strings[this.currentLanguage].start, this.defaultTextSettings);
     startText.x = -startText.width / 2;
     const start = this.add.container(960, 925).setAlpha(0).setSize(startBorder.width, startBorder.height).setInteractive();
     start.add([startText, startBorder]);
     const otherLanguage = this.currentLanguage === 'en' ? 'fr' : 'en';
-    const languageSwitch = this.add.text(0, 25, this.languages[otherLanguage].label, {
+    const languageSwitch = this.add.text(0, 25, this.strings[this.currentLanguage].otherLanguage, {
       ...this.defaultTextSettings,
       fontSize: 20,
     }).setInteractive();
@@ -81,13 +88,31 @@ export default class Main extends Phaser.Scene {
     });
   }
   
+  parseCSV(csv) {
+    return Papa.parse(csv, { header: true }).data;
+  }
+  
+  getGoogleSheetURL(name) {
+    return `https://docs.google.com/spreadsheets/d/${this.googleDocId}/gviz/tq?tqx=out:csv&sheet=${name}`;
+  }
+  
+  fetchSheet(name, onComplete) {
+    Papa.parse(this.getGoogleSheetURL(name), {
+      download: true,
+      header: true,
+      complete: results => {
+        onComplete(results.data);
+      },
+    });
+  }
+  
   loadDialogs(entryPoint) {
-    this.fetchDialog(entryPoint, dialog => {
+    this.fetchSheet(entryPoint, dialog => {
       this.dialogs[entryPoint] = dialog;
       
       dialog.map(line => {
         if (line.branch) {
-          this.fetchDialog(line.branch, branch => {
+          this.fetchSheet(line.branch, branch => {
             this.dialogs[line.branch] = branch;
           });
         }
@@ -100,7 +125,7 @@ export default class Main extends Phaser.Scene {
     for (let i = 0; i < dialog.length; i++) {
       const line = dialog[i];
       this.enqueueEvent(() => {
-        this.characters[line.person].say(line.text, line.branch, this.advanceQueue.bind(this));
+        this.characters[line.person].say(line[this.textField], line.branch, this.advanceQueue.bind(this));
       });
 
       if (line.branch) {
@@ -119,17 +144,6 @@ export default class Main extends Phaser.Scene {
     }
     
     this.advanceQueue();
-  }
-  
-  fetchDialog(name, callback) {
-    const docId = this.languages[this.currentLanguage].docId;
-    Papa.parse(`https://docs.google.com/spreadsheets/d/${docId}/gviz/tq?tqx=out:csv&sheet=${name}`, {
-      download: true,
-      header: true,
-      complete: results => {
-        callback(results.data);
-      },
-    });
   }
   
   enqueueEvent(event, delay) {
