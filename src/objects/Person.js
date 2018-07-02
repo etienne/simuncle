@@ -53,7 +53,7 @@ export default class Person extends GameObject {
         this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, line));
       }
       
-      if (line.reaction && line.reaction !== ' ') {
+      if (line[this.scene.reactionField] && line[this.scene.reactionField] !== ' ') {
         uncle.say(line[this.scene.reactionField], null, this.scene.advanceQueue.bind(this.scene));
       } else {
         this.scene.advanceQueue();
@@ -65,7 +65,7 @@ export default class Person extends GameObject {
         this.choose(branch, callback, index + 1);
       }
       : null;
-      
+    
     this.textBubble = new ActionBubble(this.scene, line[this.scene.responseField], this.slug, this.x, this.y, this.flipped, chooseCallback, dismissCallback);
     
     // Draw dots
