@@ -27,7 +27,7 @@ export default class Main extends Phaser.Scene {
     // Parse config
     this.config = {};
     this.parseCSV(this.cache.text.get('config')).map(config => {
-      const isArray = ['languages', 'stats'].indexOf(config.key) !== -1;
+      const isArray = ['languages', 'stats', 'starting_stats'].indexOf(config.key) !== -1;
       this.config[config.key] = isArray ? config.value.split(',') : config.value;
     });
     
@@ -67,14 +67,15 @@ export default class Main extends Phaser.Scene {
     this.meters = this.add.container(0, -140);
     const statsCount = this.config.stats.length;
     const marginX = 420;
-    const marginY = 60;
+    const marginY = 40;
     const padding = 80;
     const meterHeight = 24;
     const meterPadding = 6;
     const meterWidth = (1920 - (marginX * 2) - (padding * (statsCount - 1))) / statsCount;
     let currentOffset = 0;
     
-    this.config.stats.map(stat => {
+    this.config.stats.map((stat, index) => {
+      const level = parseInt(this.config.starting_stats[index]);
       const background = this.add.graphics({
         lineStyle: { width: 2, color: 0x3D54ED },
         fillStyle: { color: 0x1B1862 },
@@ -82,14 +83,14 @@ export default class Main extends Phaser.Scene {
       const meter = this.add.graphics().fillStyle(0xFF5562).fillRect(0, 0, meterWidth - meterPadding * 2, meterHeight - meterPadding * 2);
       meter.x = meterPadding;
       meter.y = meterPadding;
-      meter.scaleX = 0;
+      meter.scaleX = level / 100;
       const bar = this.add.container(marginX + currentOffset, marginY);
-      const text = this.add.text(0, 50, this.strings[this.currentLanguage][stat], this.defaultTextSettings);
+      const text = this.add.text(0, 50, this.strings[this.currentLanguage][stat], {
+        ...this.defaultTextSettings,
+        fontSize: 22,
+      });
       bar.add([background, meter, text]);
-      this.stats[stat] = {
-        level: 0,
-        meter,
-      };
+      this.stats[stat] = { level, meter };
       this.meters.add(bar);
       currentOffset += meterWidth + padding;
     });
@@ -202,11 +203,11 @@ export default class Main extends Phaser.Scene {
   handleDamage(line) {
     let didInflictDamage = false;
     this.config.stats.map(statName => {
-      const damage = line[statName];
+      const damage = parseInt(line[statName]);
       const stat = this.stats[statName];
-      if (damage > 0) {
+      if (damage !== 0) {
         didInflictDamage = true;
-        stat.level += parseInt(damage);
+        stat.level += damage;
         this.tweens.add({
           targets: stat.meter,
           scaleX: stat.level / 100,
