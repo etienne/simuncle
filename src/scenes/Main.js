@@ -42,13 +42,25 @@ export default class Main extends Phaser.Scene {
     
     // Add stuff to the scene
     const background = this.add.image(0, 0, 'atlas', 'background').setOrigin(0);
-    const table = this.add.image(960, 600, 'atlas', 'table');
+    const table = this.add.image(890, 600, 'atlas', 'table');
+    this.chuck = this.add.sprite(1320, 565, 'atlas', 'chuck_1');
     const title = this.add.image(960, 200, 'atlas', `title_${this.currentLanguage}`).setAlpha(0);
     const startBorder = this.add.image(0, 0, 'atlas', 'buttonBorder');
     const startText = this.add.text(0, -16, this.strings[this.currentLanguage].start, this.defaultTextSettings);
     startText.x = -startText.width / 2;
     const start = this.add.container(960, 925).setAlpha(0).setSize(startBorder.width, startBorder.height).setInteractive();
     start.add([startText, startBorder]);
+    
+    // Create animations for Chuck the racist plant
+    [2, 3, 4, 5].map(frame => {
+      this.anims.create({
+        key: `chuck_${frame}`,
+        frames: [frame - 1, frame].map(f => { return { key: 'atlas', frame: `chuck_${f}` } }),
+        delay: 750,
+        frameRate: 18,
+        repeat: 5,
+      });
+    });
     
     // Set up language switching
     const otherLanguage = this.currentLanguage === 'en' ? 'fr' : 'en';
@@ -205,6 +217,7 @@ export default class Main extends Phaser.Scene {
     this.config.stats.map(statName => {
       const damage = parseInt(line[statName]);
       const stat = this.stats[statName];
+      const previousLevel = stat.level;
       if (damage !== 0) {
         didInflictDamage = true;
         stat.level += damage;
@@ -215,6 +228,14 @@ export default class Main extends Phaser.Scene {
           duration: 700,
           ease: 'Power2',
         });
+        
+        if (statName === 'racism') {
+          const nextFrame = Math.floor(stat.level / 20) + 1;
+          const previousFrame = Math.floor(previousLevel / 20) + 1;
+          const animationName = `chuck_${nextFrame}`;
+          console.log('About to play animation', animationName);
+          this.chuck.play(animationName);
+        }
       }
     });
     
@@ -227,6 +248,7 @@ export default class Main extends Phaser.Scene {
         yoyo: true,
         hold: 1700,
       });
+      
       setTimeout(this.advanceQueue.bind(this), 3000);
     } else {
       this.advanceQueue();
