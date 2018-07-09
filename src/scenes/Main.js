@@ -95,12 +95,12 @@ export default class Main extends Phaser.Scene {
     });
     
     this.characters = {
-      'Cousin 1':  new Person(this, 'Cousin 1',  855,  340),
-      'Uncle':     new Person(this, 'Uncle',     1025, 340),
-      'Cousin 2':  new Person(this, 'Cousin 2',  1195, 340),
-      'Mom':       new Person(this, 'Mom',       735,  490, true),
-      'Player':    new Person(this, 'Player',    905,  490, true),
-      'Bystander': new Person(this, 'Bystander', 1075, 490, true),
+      'Cousin 1':  new Person(this, 'Cousin 1',  785,  340),
+      'Uncle':     new Person(this, 'Uncle',     955, 340),
+      'Cousin 2':  new Person(this, 'Cousin 2',  1125, 340),
+      'Mom':       new Person(this, 'Mom',       665,  490, true),
+      'Player':    new Person(this, 'Player',    835,  490, true),
+      'Bystander': new Person(this, 'Bystander', 1005, 490, true),
     };
     
     const tween = this.tweens.add({
