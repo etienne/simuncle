@@ -25,12 +25,12 @@ export default class Person extends GameObject {
     const chooseCallback = () => {
       uncle.textBubble.remove();
       this.slideOutDots();
-      this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, line));
+      this.scene.queue.prequeue(this.scene.handleDamage.bind(this.scene, line));
       
       if (line[this.scene.reactionField] && line[this.scene.reactionField] !== ' ') {
-        uncle.say(line[this.scene.reactionField], null, this.scene.advanceQueue.bind(this.scene));
+        uncle.say(line[this.scene.reactionField], null, this.scene.queue.advance.bind(this.scene));
       } else {
-        this.scene.advanceQueue();
+        this.scene.queue.advance();
       }
     };
     
@@ -97,6 +97,6 @@ export default class Person extends GameObject {
     this.textBubble.remove();
     this.slideOutDots();
     this.scene.prequeueEvent(this.scene.handleDamage.bind(this.scene, { player: 20 }));
-    this.say('…', null, this.scene.advanceQueue.bind(this.scene));
+    this.say('…', null, this.scene.queue.advance.bind(this.scene));
   }
 }

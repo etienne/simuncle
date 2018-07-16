@@ -1,19 +1,19 @@
 import 'phaser';
-import Papa from 'papaparse';
-import { Person } from '../objects';
-import shuffle from '../helpers/shuffle';
-import locationQuery from '../helpers/locationQuery';
+import { Person, DialogManager, GoogleSheetManager, QueueManager } from '../objects';
 
 export default class Main extends Phaser.Scene {
   preload() {
-    this.googleDocId = '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg';
-    this.queue = [];
-    this.dialogs = {};
+    // Manage managers
+    this.dialogs = new DialogManager(this);
+    this.googleSheets = new GoogleSheetManager(this);
+    this.queue = new QueueManager(this);
+
+    // Load assets
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
-    ['config', 'strings'].map(key => this.load.text(key, this.getGoogleSheetURL(`_${key}`)));
+    ['config', 'strings'].map(key => this.load.text(key, this.googleSheets.getSheetURL(`_${key}`)));
     this.currentLanguage = localStorage.getItem('language') || 'fr';
     ['text', 'response', 'reaction'].map(field => this[`${field}Field`] = `${field}_${this.currentLanguage}`);
-    this.loadDialogs('intro');
+    this.dialogs.load('intro');
     this.defaultTextSettings = {
       fontFamily: 'Nunito Sans',
       fontSize: 27,
@@ -27,7 +27,7 @@ export default class Main extends Phaser.Scene {
   create() {
     // Parse config
     this.config = {};
-    this.parseCSV(this.cache.text.get('config')).map(config => {
+    this.googleSheets.parseCSV(this.cache.text.get('config')).map(config => {
       const isArray = ['languages', 'stats', 'starting_stats'].indexOf(config.key) !== -1;
       this.config[config.key] = isArray ? config.value.split(',') : config.value;
     });
@@ -35,7 +35,7 @@ export default class Main extends Phaser.Scene {
     // Parse strings
     this.strings = {};
     this.config.languages.map(language => this.strings[language] = {});
-    this.parseCSV(this.cache.text.get('strings')).map(string => {
+    this.googleSheets.parseCSV(this.cache.text.get('strings')).map(string => {
       this.config.languages.map(language => {
         this.strings[language][string.key] = string[language];
       });
@@ -128,89 +128,9 @@ export default class Main extends Phaser.Scene {
         targets: [title, start, languageSwitch],
         alpha: 0,
         duration: 500,
-        onComplete: () => this.startDialog('intro'),
+        onComplete: () => this.dialogs.start('intro'),
       });
     });
-  }
-  
-  parseCSV(csv) {
-    return Papa.parse(csv, { header: true }).data;
-  }
-  
-  getGoogleSheetURL(name) {
-    return `https://docs.google.com/spreadsheets/d/${this.googleDocId}/gviz/tq?tqx=out:csv&sheet=${name}`;
-  }
-  
-  fetchSheet(name, onComplete) {
-    Papa.parse(this.getGoogleSheetURL(name), {
-      download: true,
-      header: true,
-      complete: results => {
-        onComplete(results.data);
-      },
-    });
-  }
-  
-  loadDialogs(entryPoint) {
-    this.fetchSheet(entryPoint, dialog => {
-      this.dialogs[entryPoint] = dialog;
-      
-      dialog.map(line => {
-        if (line.branch) {
-          this.fetchSheet(line.branch, branch => {
-            this.dialogs[line.branch] = branch;
-          });
-        }
-      });
-    });
-  }
-  
-  startDialog(name) {
-    const dialog = this.dialogs[name];
-    for (let i = 0; i < dialog.length; i++) {
-      const line = dialog[i];
-      this.enqueueEvent(() => {
-        this.characters[line.person].say(line[this.textField], line.branch, this.advanceQueue.bind(this));
-      });
-
-      if (line.branch) {
-        const branchLines = this.dialogs[line.branch];
-        shuffle(branchLines);
-
-        this.enqueueEvent(() => {
-          this.characters['Player'].choose(branchLines, this.advanceQueue.bind(this));
-        });
-      }
-    }
-    
-    if (locationQuery.skip > 0) {
-      console.warn(`Skipping ${locationQuery.skip} events from beginning of queue`);
-      this.queue.splice(0, locationQuery.skip);
-    }
-    
-    this.advanceQueue();
-  }
-  
-  enqueueEvent(event, delay) {
-    this.queue.push({ event, delay });
-  }
-  
-  prequeueEvent(event, delay) {
-    this.queue.unshift({ event, delay });
-  }
-  
-  advanceQueue() {
-    const event = this.queue.shift();
-    
-    if (event) {
-      if (event.delay) {
-        setTimeout(event.event, event.delay)
-      } else {
-        event.event();
-      }
-    } else {
-      this.scene.restart();
-    }
   }
   
   handleDamage(line) {
@@ -250,9 +170,9 @@ export default class Main extends Phaser.Scene {
         hold: 1700,
       });
       
-      setTimeout(this.advanceQueue.bind(this), 3000);
+      setTimeout(this.queue.advance.bind(this), 3000);
     } else {
-      this.advanceQueue();
+      this.queue.advance();
     }
   }
 }
