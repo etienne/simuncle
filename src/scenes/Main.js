@@ -218,7 +218,7 @@ export default class Main extends Phaser.Scene {
       const damage = parseInt(line[statName]);
       const stat = this.stats[statName];
       const previousLevel = stat.level;
-      if (damage !== 0) {
+      if (damage < 0 || damage > 0) {
         didInflictDamage = true;
         stat.level += damage;
         this.tweens.add({
