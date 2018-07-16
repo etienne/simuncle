@@ -26,13 +26,18 @@ export default class TextBubble extends GameObject {
   }
   
   animate() {
+    this.animating = true;
+    this.skipAnimation = false;
+    const characterCount = this.textWithLineBreaks.length;
+    const characterDelay = 12;
     let currentText = '';
-    for (let index = 0; index < this.textWithLineBreaks.length; index++) {
+    for (let index = 0; index < characterCount; index++) {
       currentText += this.textWithLineBreaks[index];
-      this.scene.time.delayedCall(16 * index, text => {
-        this.text.setText(text);
+      this.scene.time.delayedCall(characterDelay * index, (text) => {
+        this.text.setText(this.skipAnimation ? this.textWithLineBreaks : text);
       }, [currentText], this);
     }
+    this.scene.time.delayedCall(characterDelay * characterCount, () => { this.animating = false }, [], this);
 
     this.container.alpha = 0;
     const animationOffset = 30;
@@ -46,10 +51,15 @@ export default class TextBubble extends GameObject {
       onComplete: this.handleCallback.bind(this),
     });
   }
-  
+
   clickCallback() {
-    this.remove();
-    this.callback();
+    if (this.animating) {
+      this.skipAnimation = true;
+      this.animating = false;
+    } else {
+      this.remove();
+      this.callback();
+    }
   }
   
   handleCallback() {
