@@ -7,12 +7,15 @@ export default class TextBubble extends GameObject {
     this.callback = callback;
     this.flipped = flipped;
     
-    this.width = Math.min(900, Math.round(string.length * 1.5) + 580);
+    this.width = Math.min(900, Math.round(string.length * 1.5) + 600);
+    const textWidth = this.width - 360;
     this.text = scene.add.text(320, 36, this.string, {
       ...scene.defaultTextSettings,
-      wordWrap: { width: this.width - 360 },
+      wordWrap: { width: textWidth },
     });
     this.height = Math.max(260, this.text.height + 36 + 36 + heightAdjustment);
+    this.textWithLineBreaks = this.text.runWordWrap(this.text.text);
+    this.text.setWordWrapWidth(null);
 
     this.container = scene.add.container(x - this.width / 2, flipped ? y + 160 : y - this.height);
     this.background = scene.add.graphics().fillStyle(0x3240BF).fillRect(0, 0, this.width, this.height);
@@ -23,6 +26,14 @@ export default class TextBubble extends GameObject {
   }
   
   animate() {
+    let currentText = '';
+    for (let index = 0; index < this.textWithLineBreaks.length; index++) {
+      currentText += this.textWithLineBreaks[index];
+      this.scene.time.delayedCall(16 * index, text => {
+        this.text.setText(text);
+      }, [currentText], this);
+    }
+
     this.container.alpha = 0;
     const animationOffset = 30;
     this.container.y = this.container.y + ((this.flipped ? 1 : -1) * animationOffset);
