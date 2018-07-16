@@ -34,10 +34,12 @@ export default class TextBubble extends GameObject {
     for (let index = 0; index < characterCount; index++) {
       currentText += this.textWithLineBreaks[index];
       this.scene.time.delayedCall(characterDelay * index, (text) => {
-        this.text.setText(this.skipAnimation ? this.textWithLineBreaks : text);
+        if (!this.skipAnimation) {
+          this.text.setText(text);
+        }
       }, [currentText], this);
     }
-    this.scene.time.delayedCall(characterDelay * characterCount, () => { this.animating = false }, [], this);
+    this.scene.time.delayedCall(characterDelay * characterCount, this.finishAnimation, [], this);
 
     this.container.alpha = 0;
     const animationOffset = 30;
@@ -52,10 +54,22 @@ export default class TextBubble extends GameObject {
     });
   }
 
-  clickCallback() {
+  finishAnimation() {
     if (this.animating) {
       this.skipAnimation = true;
       this.animating = false;
+      this.text.setText(this.textWithLineBreaks);
+      this.animationComplete();
+    }
+  }
+
+  animationComplete() {
+    // This method is meant to be overridden
+  }
+
+  clickCallback() {
+    if (this.animating) {
+      this.finishAnimation();
     } else {
       this.remove();
       this.callback();
