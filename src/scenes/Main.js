@@ -1,5 +1,5 @@
 import 'phaser';
-import { Person, DialogManager, GoogleSheetManager, QueueManager } from '../objects';
+import { Person, DialogManager, GoogleSheetManager, QueueManager, StatsManager } from '../objects';
 
 export default class Main extends Phaser.Scene {
   preload() {
@@ -7,6 +7,7 @@ export default class Main extends Phaser.Scene {
     this.dialogs = new DialogManager(this);
     this.googleSheets = new GoogleSheetManager(this);
     this.queue = new QueueManager(this);
+    this.stats = new StatsManager(this);
 
     // Load assets
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
@@ -14,6 +15,8 @@ export default class Main extends Phaser.Scene {
     this.currentLanguage = localStorage.getItem('language') || 'fr';
     ['text', 'response', 'reaction'].map(field => this[`${field}Field`] = `${field}_${this.currentLanguage}`);
     this.dialogs.load('intro');
+
+    // Configure things
     this.defaultTextSettings = {
       fontFamily: 'Nunito Sans',
       fontSize: 27,
@@ -51,6 +54,7 @@ export default class Main extends Phaser.Scene {
     startText.x = -startText.width / 2;
     const start = this.add.container(960, 925).setAlpha(0).setSize(startBorder.width, startBorder.height).setInteractive();
     start.add([startText, startBorder]);
+    this.stats.initialize();
     
     // Create animations for Chuck the racist plant
     [2, 3, 4, 5].map(frame => {
@@ -74,40 +78,8 @@ export default class Main extends Phaser.Scene {
       localStorage.setItem('language', otherLanguage);
       this.scene.restart();
     });
-    
-    // Add stat meters
-    this.stats = {};
-    this.meters = this.add.container(0, -140);
-    const statsCount = this.config.stats.length;
-    const marginX = 420;
-    const marginY = 40;
-    const padding = 80;
-    const meterHeight = 24;
-    const meterPadding = 6;
-    const meterWidth = (1920 - (marginX * 2) - (padding * (statsCount - 1))) / statsCount;
-    let currentOffset = 0;
-    
-    this.config.stats.map((stat, index) => {
-      const level = parseInt(this.config.starting_stats[index]);
-      const background = this.add.graphics({
-        lineStyle: { width: 2, color: 0x3D54ED },
-        fillStyle: { color: 0x1B1862 },
-      }).fillRect(0, 0, meterWidth, meterHeight).strokeRect(0, 0, meterWidth, meterHeight);
-      const meter = this.add.graphics().fillStyle(0xFF5562).fillRect(0, 0, meterWidth - meterPadding * 2, meterHeight - meterPadding * 2);
-      meter.x = meterPadding;
-      meter.y = meterPadding;
-      meter.scaleX = level / 100;
-      const bar = this.add.container(marginX + currentOffset, marginY);
-      const text = this.add.text(0, 50, this.strings[this.currentLanguage][stat], {
-        ...this.defaultTextSettings,
-        fontSize: 22,
-      });
-      bar.add([background, meter, text]);
-      this.stats[stat] = { level, meter };
-      this.meters.add(bar);
-      currentOffset += meterWidth + padding;
-    });
-    
+
+    // Add characters
     this.characters = {
       'Cousin 1':  new Person(this, 'Cousin 1',  785,  340),
       'Uncle':     new Person(this, 'Uncle',     955, 340),
@@ -131,48 +103,5 @@ export default class Main extends Phaser.Scene {
         onComplete: () => this.dialogs.start('intro'),
       });
     });
-  }
-  
-  handleDamage(line) {
-    let didInflictDamage = false;
-    this.config.stats.map(statName => {
-      const damage = parseInt(line[statName]);
-      const stat = this.stats[statName];
-      const previousLevel = stat.level;
-      if (damage < 0 || damage > 0) {
-        didInflictDamage = true;
-        stat.level += damage;
-        this.tweens.add({
-          targets: stat.meter,
-          scaleX: stat.level / 100,
-          delay: 500,
-          duration: 700,
-          ease: 'Power2',
-        });
-        
-        if (statName === 'racism') {
-          const nextFrame = Math.floor(stat.level / 20) + 1;
-          const previousFrame = Math.floor(previousLevel / 20) + 1;
-          const animationName = `chuck_${nextFrame}`;
-          console.log('About to play animation', animationName);
-          this.chuck.play(animationName);
-        }
-      }
-    });
-    
-    if (didInflictDamage) {
-      this.tweens.add({
-        targets: this.meters,
-        y: 0,
-        duration: 500,
-        ease: 'Power2',
-        yoyo: true,
-        hold: 1700,
-      });
-      
-      setTimeout(this.queue.advance.bind(this), 3000);
-    } else {
-      this.queue.advance();
-    }
   }
 }
