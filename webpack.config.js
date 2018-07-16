@@ -51,7 +51,7 @@ module.exports = {
       server: { baseDir: ['dist'] },
       ui: false,
     }),
-    new CopyWebpackPlugin(['assets/index.html']),
+    new CopyWebpackPlugin(['assets/index.html', 'assets/images/cursor.png']),
     new ExtractTextPlugin("styles.css"),
     new SpritesmithPlugin({
       src: {
