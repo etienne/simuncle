@@ -32,6 +32,11 @@ export default class ActionBubble extends TextBubble {
   }
   
   handleCallback() {
-    // Do nothing
+    this.scene.input.on('pointerdown', this.finishAnimation, this);
+  }
+
+  remove() {
+    this.scene.input.off('pointerdown', this.finishAnimation, this);
+    this.container.destroy();
   }
 }
