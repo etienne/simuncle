@@ -75,6 +75,8 @@ export default class Main extends Phaser.Scene {
       fontSize: 20,
     }).setInteractive();
     languageSwitch.x = 1920 - languageSwitch.width - 32;
+    languageSwitch.on('pointerover', () => languageSwitch.setAlpha(0.5));
+    languageSwitch.on('pointerout', () => languageSwitch.setAlpha(1.0));
     languageSwitch.on('pointerdown', () => {
       localStorage.setItem('language', otherLanguage);
       this.scene.restart();
@@ -96,6 +98,8 @@ export default class Main extends Phaser.Scene {
       duration: 500,
     });
     
+    start.on('pointerover', () => start.setAlpha(0.5));
+    start.on('pointerout', () => start.setAlpha(1.0));
     start.on('pointerdown', () => {
       this.tweens.add({
         targets: [title, start, languageSwitch],
@@ -104,7 +108,9 @@ export default class Main extends Phaser.Scene {
         onComplete: () => {
           this.focus.unregister(start);
           this.focus.unregister(languageSwitch);
-          this.dialogs.start('intro')
+          this.dialogs.start('intro');
+          start.destroy();
+          languageSwitch.destroy();
         },
       });
     });

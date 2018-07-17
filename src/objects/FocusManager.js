@@ -4,13 +4,13 @@ export default class FocusManager extends GameObject {
   constructor(scene) {
     super(scene);
     this.targets = [];
-    this.currentIndex = null;
-    this.current = null;
     this.scene.input.keyboard.on('keydown_LEFT', this.previous, this);
     this.scene.input.keyboard.on('keydown_RIGHT', this.next, this);
     this.scene.input.keyboard.on('keydown_TAB', this.next, this);
     this.scene.input.keyboard.on('keydown_ENTER', this.activate, this);
-    this.scene.input.keyboard.on('keydown_SPACEBAR', this.activate, this);
+    this.scene.input.keyboard.on('keydown_SPACE', this.activate, this);
+    this.register(this.scene.input);
+    this.set(0);
   }
 
   register(gameObject) {
@@ -18,17 +18,10 @@ export default class FocusManager extends GameObject {
   }
 
   unregister(gameObject) {
-    this.targets.filter(target => {
-      if (gameObject === target) {
-        if (this.current === target) {
-          this.currentIndex = null;
-          this.current = null;
-        }
-        return false;
-      } else {
-        return true;
-      }
-    });
+    this.targets = this.targets.filter(target => gameObject !== target);
+    if (this.targets.indexOf(this.current) === -1) {
+      this.set(0);
+    }
   }
 
   previous() {
@@ -48,15 +41,14 @@ export default class FocusManager extends GameObject {
   }
 
   set(index) {
-    this.targets.map(target => target.setAlpha(1.0));
+    this.targets.map(target => target.emit('pointerout'));
     this.currentIndex = index;
     this.current = this.targets[this.currentIndex];
-    this.current.setAlpha(0.5);
+    this.current.emit('pointerover');
+    console.log('new index is', index, 'with object', this.current);
   }
 
   activate() {
-    if (this.current) {
-      this.current.emit('pointerdown');
-    }
+    this.current.emit('pointerdown');
   }
 }
