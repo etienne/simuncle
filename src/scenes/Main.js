@@ -25,7 +25,7 @@ export default class Main extends Phaser.Scene {
       baselineX: 10,
       lineSpacing: 6,
     };
-    this.input.setDefaultCursor('url(cursor.png) 15 6, pointer');
+    this.input.setDefaultCursor('url(cursor.png) 12 4, pointer');
   }
 
   create() {
