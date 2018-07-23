@@ -50,11 +50,47 @@ export default class Main extends Phaser.Scene {
     const table = this.add.image(890, 600, 'atlas', 'table');
     this.chuck = this.add.sprite(1320, 565, 'atlas', 'chuck_1');
     const title = this.add.image(960, 200, 'atlas', `title_${this.currentLanguage}`).setAlpha(0);
-    const startBorder = this.add.image(0, 0, 'atlas', 'buttonBorder');
-    const startText = this.add.text(0, -16, this.strings[this.currentLanguage].start, this.defaultTextSettings);
-    startText.x = -startText.width / 2;
-    const start = this.add.container(960, 925).setAlpha(0).setSize(startBorder.width, startBorder.height).setInteractive();
-    start.add([startText, startBorder]);
+
+    // Set up start button
+    const startBackground = this.add.image(0, 0, 'atlas', 'start');
+    const startText = this.add.text(0, 0, this.strings[this.currentLanguage].start, this.defaultTextSettings);
+    const startTextX = -startText.width / 2;
+    const startTextY = -16;
+    startText.x = startTextX;
+    startText.y = startTextY;
+    const start = this.add.container(960, 925).setAlpha(0).setSize(startBackground.width, startBackground.height).setInteractive();
+    start.add([startBackground, startText]);
+    start.on('focus', () => startBackground.setFrame('start_focus'));
+    start.on('blur', () => startBackground.setFrame('start'));
+    start.on('pointerover', () => startBackground.setFrame('start_hover'));
+    start.on('pointerout', () => {
+      startBackground.setFrame('start');
+      startText.x = startTextX;
+      startText.y = startTextY;
+    });
+    start.on('pointerdown', () => {
+      startBackground.setFrame('start_active');
+      startText.x = startTextX + 3;
+      startText.y = startTextY - 3;
+    });
+    start.on('pointerup', () => {
+      startBackground.setFrame('start');
+      startText.x = startTextX
+      startText.y = startTextY;
+      this.tweens.add({
+        targets: [title, start, languageSwitch],
+        alpha: 0,
+        duration: 500,
+        onComplete: () => {
+          this.focus.unregister(start);
+          this.focus.unregister(languageSwitch);
+          this.dialogs.start('intro');
+          start.destroy();
+          languageSwitch.destroy();
+        },
+      });
+    });
+
     this.stats.initialize();
     
     // Create animations for Chuck the racist plant
@@ -77,7 +113,7 @@ export default class Main extends Phaser.Scene {
     languageSwitch.x = 1920 - languageSwitch.width - 32;
     languageSwitch.on('pointerover', () => languageSwitch.setAlpha(0.5));
     languageSwitch.on('pointerout', () => languageSwitch.setAlpha(1.0));
-    languageSwitch.on('pointerdown', () => {
+    languageSwitch.on('pointerup', () => {
       localStorage.setItem('language', otherLanguage);
       this.scene.restart();
     });
@@ -96,23 +132,6 @@ export default class Main extends Phaser.Scene {
       targets: [title, start],
       alpha: 1,
       duration: 500,
-    });
-    
-    start.on('pointerover', () => start.setAlpha(0.5));
-    start.on('pointerout', () => start.setAlpha(1.0));
-    start.on('pointerdown', () => {
-      this.tweens.add({
-        targets: [title, start, languageSwitch],
-        alpha: 0,
-        duration: 500,
-        onComplete: () => {
-          this.focus.unregister(start);
-          this.focus.unregister(languageSwitch);
-          this.dialogs.start('intro');
-          start.destroy();
-          languageSwitch.destroy();
-        },
-      });
     });
 
     // Set up keyboard navigation

@@ -96,7 +96,7 @@ export default class Person extends GameObject {
     this.scene.characters['Uncle'].textBubble.remove();
     this.textBubble.remove();
     this.slideOutDots();
-    this.scene.prequeueEvent(this.scene.stats.handleDamage.bind(this.scene.stats, { player: 20 }));
+    this.scene.queue.prequeue(this.scene.stats.handleDamage.bind(this.scene.stats, { racism: 20 }));
     this.say('…', null, this.scene.queue.advance.bind(this.scene));
   }
 }

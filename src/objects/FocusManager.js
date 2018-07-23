@@ -41,14 +41,15 @@ export default class FocusManager extends GameObject {
   }
 
   set(index) {
-    this.targets.map(target => target.emit('pointerout'));
+    this.targets.map(target => target.emit('blur'));
     this.currentIndex = index;
     this.current = this.targets[this.currentIndex];
-    this.current.emit('pointerover');
+    this.current.emit('focus');
     console.log('new index is', index, 'with object', this.current);
   }
 
   activate() {
     this.current.emit('pointerdown');
+    this.current.emit('pointerup');
   }
 }
