@@ -111,8 +111,19 @@ export default class Main extends Phaser.Scene {
       fontSize: 20,
     }).setInteractive();
     languageSwitch.x = 1920 - languageSwitch.width - 32;
-    languageSwitch.on('pointerover', () => languageSwitch.setAlpha(0.5));
-    languageSwitch.on('pointerout', () => languageSwitch.setAlpha(1.0));
+    const languageUnderline = this.add.graphics({
+      lineStyle: { width: 2, color: 0xE0ECDF },
+    }).lineBetween(
+      languageSwitch.x,
+      languageSwitch.y + 26,
+      languageSwitch.x + languageSwitch.width,
+      languageSwitch.y + 26
+    );
+    languageUnderline.setAlpha(0);
+    languageSwitch.on('pointerover', () => languageUnderline.setAlpha(1));
+    languageSwitch.on('pointerout', () => languageUnderline.setAlpha(0));
+    languageSwitch.on('focus', () => languageUnderline.setAlpha(1));
+    languageSwitch.on('blur', () => languageUnderline.setAlpha(0));
     languageSwitch.on('pointerup', () => {
       localStorage.setItem('language', otherLanguage);
       this.scene.restart();

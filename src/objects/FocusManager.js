@@ -6,6 +6,8 @@ export default class FocusManager extends GameObject {
     this.targets = [];
     this.scene.input.keyboard.on('keydown_LEFT', this.previous, this);
     this.scene.input.keyboard.on('keydown_RIGHT', this.next, this);
+    this.scene.input.keyboard.on('keydown_UP', this.previous, this);
+    this.scene.input.keyboard.on('keydown_DOWN', this.next, this);
     this.scene.input.keyboard.on('keydown_TAB', this.next, this);
     this.scene.input.keyboard.on('keydown_ENTER', this.activate, this);
     this.scene.input.keyboard.on('keydown_SPACE', this.activate, this);
@@ -45,11 +47,10 @@ export default class FocusManager extends GameObject {
     this.currentIndex = index;
     this.current = this.targets[this.currentIndex];
     this.current.emit('focus');
-    console.log('new index is', index, 'with object', this.current);
   }
 
   activate() {
     this.current.emit('pointerdown');
-    this.current.emit('pointerup');
+    this.scene.time.delayedCall(20, () => this.current.emit('pointerup'));
   }
 }
