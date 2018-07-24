@@ -50,6 +50,19 @@ export default class Main extends Phaser.Scene {
     const table = this.add.image(890, 600, 'atlas', 'table');
     this.chuck = this.add.sprite(1320, 565, 'atlas', 'chuck_1');
     const title = this.add.image(960, 200, 'atlas', `title_${this.currentLanguage}`).setAlpha(0);
+    this.balloons = [];
+    [1, 2, 3, 4, 5].map(index => {
+      this.balloons[index] = this.add.image(470, 700, 'atlas', `balloon_${index}`).setOrigin(0.5, 1);
+      this.balloons[index].setAngle(index * (index % 2 ? 2 : -2));
+      this.tweens.add({
+        targets: [this.balloons[index]],
+        angle: index * (index % 2 ? -2 : 2),
+        ease: 'Quad.easeInOut',
+        duration: (index + Math.random() - 0.5) * 2222,
+        yoyo: true,
+        repeat: -1,
+      });
+    });
 
     // Set up start button
     const startBackground = this.add.image(0, 0, 'atlas', 'start');
@@ -139,7 +152,7 @@ export default class Main extends Phaser.Scene {
       'Bystander': new Person(this, 'Bystander', 1005, 490, true),
     };
     
-    const tween = this.tweens.add({
+    this.tweens.add({
       targets: [title, start],
       alpha: 1,
       duration: 500,
