@@ -106,6 +106,7 @@ export default class Main extends Phaser.Scene {
         targets: [title, start, languageSwitch],
         alpha: 0,
         duration: 500,
+        hold: 1500,
         onComplete: () => {
           this.focus.unregister(start);
           this.focus.unregister(languageSwitch);
@@ -113,6 +114,13 @@ export default class Main extends Phaser.Scene {
           start.destroy();
           languageSwitch.destroy();
         },
+      });
+      this.tweens.add({
+        targets: this.stats.meters,
+        y: 0,
+        delay: 1000,
+        duration: 500,
+        ease: 'Power2',
       });
     });
 

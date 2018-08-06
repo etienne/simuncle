@@ -11,31 +11,27 @@ export default class StatsManager extends GameObject {
     this.startingStats = this.scene.config.starting_stats;
 
     // Add meters
-    this.meters = this.scene.add.container(0, -140);
+    this.meters = this.scene.add.container(0, -180);
     const statsCount = this.statsList.length;
-    const marginX = 420;
-    const marginY = 40;
-    const padding = 80;
-    const meterHeight = 24;
-    const meterPadding = 6;
+    const marginX = 80;
+    const marginY = 70;
+    const padding = 990;
     const meterWidth = (1920 - (marginX * 2) - (padding * (statsCount - 1))) / statsCount;
     let currentOffset = 0;
     
     this.statsList.map((stat, index) => {
       const level = parseInt(this.startingStats[index]);
-      const background = this.scene.add.graphics({
-        lineStyle: { width: 2, color: 0x3D54ED },
-        fillStyle: { color: 0x1B1862 },
-      }).fillRect(0, 0, meterWidth, meterHeight).strokeRect(0, 0, meterWidth, meterHeight);
-      const meter = this.scene.add.graphics().fillStyle(0xFF5562).fillRect(0, 0, meterWidth - meterPadding * 2, meterHeight - meterPadding * 2);
-      meter.x = meterPadding;
-      meter.y = meterPadding;
-      meter.scaleX = level / 100;
+      const background = this.scene.add.image(0, 0, 'atlas', `${stat}_background`).setOrigin(0, 0);
+      const meter = this.scene.add.image(0, 0, 'atlas', `${stat}_meter`).setOrigin(0, 0).setCrop(0, 0, 0, 0);
       const bar = this.scene.add.container(marginX + currentOffset, marginY);
-      const text = this.scene.add.text(0, 50, this.scene.strings[this.scene.currentLanguage][stat], {
+      const text = this.scene.add.text(0, 70, this.scene.strings[this.scene.currentLanguage][stat], {
         ...this.scene.defaultTextSettings,
+        color: '#7387E8',
         fontSize: 22,
       });
+      if (index % 2) {
+        text.x = meter.width - text.width;
+      }
       bar.add([background, meter, text]);
       this.stats[stat] = { level, meter };
       this.meters.add(bar);
@@ -52,11 +48,15 @@ export default class StatsManager extends GameObject {
       if (damage < 0 || damage > 0) {
         didInflictDamage = true;
         stat.level += damage;
-        this.scene.tweens.add({
-          targets: stat.meter,
-          scaleX: stat.level / 100,
-          delay: 500,
-          duration: 700,
+        this.scene.tweens.addCounter({
+          from: previousLevel,
+          to: stat.level,
+          onUpdate: (tween, { value }) => {
+            const width = stat.meter.width * (value / 100);
+            stat.meter.setCrop(statName === 'racism' ? stat.meter.width - width: 0, 0, width, stat.meter.height);
+          },
+          delay: 200,
+          duration: 800,
           ease: 'Power2',
         });
         
@@ -74,16 +74,7 @@ export default class StatsManager extends GameObject {
     });
     
     if (didInflictDamage) {
-      this.scene.tweens.add({
-        targets: this.meters,
-        y: 0,
-        duration: 500,
-        ease: 'Power2',
-        yoyo: true,
-        hold: 1700,
-      });
-      
-      setTimeout(this.scene.queue.advance.bind(this.scene), 3000);
+      setTimeout(this.scene.queue.advance.bind(this.scene), 2000);
     } else {
       this.scene.queue.advance();
     }
