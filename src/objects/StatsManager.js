@@ -60,16 +60,16 @@ export default class StatsManager extends GameObject {
           ease: 'Power2',
         });
         
-        if (statName === 'racism') {
-          const nextFrame = Math.floor(stat.level / 20) + 1;
-          // const previousFrame = Math.floor(previousLevel / 20) + 1;
-          const animationName = `chuck_${nextFrame}`;
-          if (nextFrame > 1 && nextFrame <= 5) {
-            this.scene.chuck.play(animationName);
-          } else {
-            console.error('Attempted to play invalid animation', animationName);
-          }
-        }
+        // if (statName === 'racism') {
+        //   const nextFrame = Math.floor(stat.level / 20) + 1;
+        //   // const previousFrame = Math.floor(previousLevel / 20) + 1;
+        //   const animationName = `chuck_${nextFrame}`;
+        //   if (nextFrame > 1 && nextFrame <= 5) {
+        //     this.scene.chuck.play(animationName);
+        //   } else {
+        //     console.error('Attempted to play invalid animation', animationName);
+        //   }
+        // }
       }
     });
     
