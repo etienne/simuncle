@@ -73,9 +73,21 @@ export default class Main extends Phaser.Scene {
     startText.y = startTextY;
     const start = this.add.container(960, 925).setAlpha(0).setSize(startBackground.width, startBackground.height).setInteractive();
     start.add([startBackground, startText]);
-    start.on('focus', () => startBackground.setFrame('start_focus'));
-    start.on('blur', () => startBackground.setFrame('start'));
-    start.on('pointerover', () => startBackground.setFrame('start_hover'));
+    start.on('focus', () => {
+      startBackground.setFrame('start_focus');
+      startText.x = startTextX - 2;
+      startText.y = startTextY + 2;
+    });
+    start.on('blur', () => {
+      startBackground.setFrame('start');
+      startText.x = startTextX;
+      startText.y = startTextY;
+    });
+    start.on('pointerover', () => {
+      startBackground.setFrame('start_hover');
+      startText.x = startTextX - 2;
+      startText.y = startTextY + 2;
+    });
     start.on('pointerout', () => {
       startBackground.setFrame('start');
       startText.x = startTextX;
