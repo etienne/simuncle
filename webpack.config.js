@@ -24,7 +24,7 @@ module.exports = {
       },
       {
         test: /\.woff$/,
-        use: "file-loader",
+        use: "url-loader",
       },
       {
         test: /\.csv$/,
