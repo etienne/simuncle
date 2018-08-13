@@ -13,16 +13,19 @@ export default class StatsManager extends GameObject {
     // Add meters
     this.meters = this.scene.add.container(0, -180);
     const statsCount = this.statsList.length;
-    const marginX = 80;
-    const marginY = 70;
-    const padding = 990;
+    const marginX = 60;
+    const marginY = 50;
+    const padding = 1200;
     const meterWidth = (1920 - (marginX * 2) - (padding * (statsCount - 1))) / statsCount;
     let currentOffset = 0;
 
     this.statsList.forEach((stat, index) => {
       const level = parseInt(this.startingStats[index], 10);
-      const background = this.scene.add.image(0, 0, 'atlas', `${stat}_background`).setOrigin(0, 0);
-      const meter = this.scene.add.image(0, 0, 'atlas', `${stat}_meter`).setOrigin(0, 0).setCrop(0, 0, 0, 0);
+      const background = this.scene.add.image(0, 0, 'atlas', `${stat}_background`)
+        .setOrigin(0, 0);
+      const meter = this.scene.add.image(0, 0, 'atlas', `${stat}_meter`)
+        .setOrigin(0, 0)
+        .setCrop(0, 0, 0, 0);
       const bar = this.scene.add.container(marginX + currentOffset, marginY);
       const text = this.scene.add.text(0, 70, this.scene.l[stat], {
         ...this.scene.defaultTextSettings,
