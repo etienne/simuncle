@@ -29,14 +29,14 @@ export default class StatsManager extends GameObject {
       const bar = this.scene.add.container(marginX + currentOffset, marginY);
       const text = this.scene.add.text(0, 70, this.scene.l[stat], {
         ...this.scene.defaultTextSettings,
-        color: '#7387E8',
+        color: '#91B9F0',
         fontSize: 22,
       });
       if (index % 2) {
         text.x = meter.width - text.width;
       }
       bar.add([background, meter, text]);
-      this.stats[stat] = { level, meter };
+      this.stats[stat] = { level, meter, bar };
       this.meters.add(bar);
       currentOffset += meterWidth + padding;
     });
@@ -54,13 +54,22 @@ export default class StatsManager extends GameObject {
         this.scene.tweens.addCounter({
           from: previousLevel,
           to: stat.level,
+          duration: 800,
+          ease: 'Quart.easeOut',
           onUpdate: (tween, { value }) => {
             const width = stat.meter.width * (value / 100);
             stat.meter.setCrop(statName === 'racism' ? stat.meter.width - width : 0, 0, width, stat.meter.height);
           },
-          delay: 200,
+        });
+
+        const barInitialY = stat.bar.y;
+
+        this.scene.tweens.add({
+          targets: [stat.bar],
+          y: barInitialY,
           duration: 800,
-          ease: 'Power2',
+          ease: 'Elastic',
+          onStart: (tween, targets) => { targets[0].y += Math.abs(damage) * 2; }, // eslint-disable-line no-param-reassign
         });
 
         // if (statName === 'racism') {
