@@ -1,5 +1,5 @@
 import Papa from 'papaparse';
-import { GameObject } from '.';
+import GameObject from './GameObject';
 
 export default class GoogleSheetManager extends GameObject {
   constructor(scene) {
@@ -7,7 +7,7 @@ export default class GoogleSheetManager extends GameObject {
     this.sheetId = '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg';
   }
 
-  parseCSV(csv) {
+  static parseCSV(csv) {
     return Papa.parse(csv, { header: true }).data;
   }
 
@@ -19,9 +19,7 @@ export default class GoogleSheetManager extends GameObject {
     Papa.parse(this.getSheetURL(name), {
       download: true,
       header: true,
-      complete: results => {
-        onComplete(results.data);
-      },
+      complete: results => onComplete(results.data),
     });
   }
 }

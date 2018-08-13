@@ -1,11 +1,15 @@
-import { TextBubble } from '.';
+import TextBubble from './TextBubble';
 
 export default class ActionBubble extends TextBubble {
   constructor(scene, text, slug, x, y, flipped, chooseCallback, dismissCallback) {
     super(scene, text, slug, x, y, flipped, chooseCallback, 17 + 60 + 17);
-    
+
     const backgroundHeight = 17 + 60 + 17;
-    const buttonsBackground = scene.add.graphics().fillStyle(0x2C36A8).fillRect(0, this.height - backgroundHeight, this.width, backgroundHeight);
+    const buttonsBackground = scene
+      .add
+      .graphics()
+      .fillStyle(0x2C36A8)
+      .fillRect(0, this.height - backgroundHeight, this.width, backgroundHeight);
 
     // Set up Dismiss button
     this.dismissButton = scene.add.image(this.width - 17 - 155 - 12, this.height - 7, 'atlas', 'dismiss').setOrigin(1, 1).setInteractive();
@@ -46,12 +50,12 @@ export default class ActionBubble extends TextBubble {
       this.dismissButton.setAlpha(0.25);
     }
   }
-  
+
   choose() {
     this.chooseCallback();
     this.remove();
   }
-  
+
   handleCallback() {
     this.scene.input.on('pointerdown', this.finishAnimation, this);
   }

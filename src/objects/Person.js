@@ -1,4 +1,7 @@
-import { ActionBubble, GameObject, TextBubble, TimedBubble } from '.';
+import ActionBubble from './ActionBubble';
+import GameObject from './GameObject';
+import TextBubble from './TextBubble';
+import TimedBubble from './TimedBubble';
 
 export default class Person extends GameObject {
   constructor(scene, name, x, y, flipped = false) {
@@ -11,54 +14,63 @@ export default class Person extends GameObject {
     this.flipped = flipped;
     this.dots = scene.add.container(0, 1100);
   }
-  
+
   say(text, branch, callback) {
     this.textBubble = branch
       ? new TimedBubble(this.scene, text, this.slug, this.x, this.y, this.flipped, callback)
       : new TextBubble(this.scene, text, this.slug, this.x, this.y, this.flipped, callback);
   }
-  
+
   choose(branch, callback, index = 0) {
     const line = branch[index];
-    const uncle = this.scene.characters['Uncle'];
+    const uncle = this.scene.characters.Uncle;
 
     const chooseCallback = () => {
       uncle.textBubble.remove();
       this.slideOutDots();
       this.scene.queue.prequeue(this.scene.stats.handleDamage.bind(this.scene.stats, line));
-      
+
       if (line[this.scene.reactionField] && line[this.scene.reactionField] !== ' ') {
         uncle.say(line[this.scene.reactionField], null, this.scene.queue.advance.bind(this.scene));
       } else {
         this.scene.queue.advance();
       }
     };
-    
+
     const dismissCallback = index < branch.length - 1
       ? () => {
         this.choose(branch, callback, index + 1);
       }
       : null;
-    
-    this.textBubble = new ActionBubble(this.scene, line[this.scene.responseField], this.slug, this.x, this.y, this.flipped, chooseCallback, dismissCallback);
-    
+
+    this.textBubble = new ActionBubble(
+      this.scene,
+      line[this.scene.responseField],
+      this.slug,
+      this.x,
+      this.y,
+      this.flipped,
+      chooseCallback,
+      dismissCallback,
+    );
+
     // Draw dots
     if (this.dots.list.length) {
       this.dots.removeAll();
     } else {
       this.slideInDots();
     }
-    
+
     const dotOffset = 40;
-    for (let i = 0; i < branch.length; i++) {
+    for (let i = 0; i < branch.length; i += 1) {
       const image = i < index ? 'x' : 'dot';
       const dot = this.scene.add.image(i * dotOffset, 0, 'atlas', image);
-      
-      if (image == 'dot') {
+
+      if (image === 'dot') {
         dot.setScale(0.5, 0.5);
       }
-      
-      if (i == index) {
+
+      if (i === index) {
         this.scene.tweens.add({
           targets: dot,
           scaleX: 1,
@@ -67,12 +79,12 @@ export default class Person extends GameObject {
           ease: 'Power2',
         });
       }
-      
+
       this.dots.add(dot);
     }
     this.dots.x = 1920 / 2 - ((branch.length * dotOffset) / 2);
   }
-  
+
   slideInDots() {
     this.scene.tweens.add({
       targets: this.dots,
@@ -81,7 +93,7 @@ export default class Person extends GameObject {
       ease: 'Power2',
     });
   }
-  
+
   slideOutDots() {
     this.scene.tweens.add({
       targets: this.dots,
@@ -91,9 +103,9 @@ export default class Person extends GameObject {
       onComplete: () => this.dots.removeAll(),
     });
   }
-  
+
   sayNothing() {
-    this.scene.characters['Uncle'].textBubble.remove();
+    this.scene.characters.Uncle.textBubble.remove();
     this.textBubble.remove();
     this.slideOutDots();
     this.scene.queue.prequeue(this.scene.stats.handleDamage.bind(this.scene.stats, { racism: 20 }));

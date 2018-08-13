@@ -1,33 +1,37 @@
 import { shuffle, locationQuery } from '../helpers';
-import { GameObject } from '.';
+import GameObject from './GameObject';
 
 export default class DialogManager extends GameObject {
   constructor(scene) {
     super(scene);
     this.dialogs = {};
   }
-  
+
   load(entryPoint) {
-    this.scene.googleSheets.fetchSheet(entryPoint, dialog => {
+    this.scene.googleSheets.fetchSheet(entryPoint, (dialog) => {
       this.dialogs[entryPoint] = dialog;
-      
-      dialog.map(line => {
+
+      dialog.forEach((line) => {
         if (line.branch) {
-          this.scene.googleSheets.fetchSheet(line.branch, branch => {
+          this.scene.googleSheets.fetchSheet(line.branch, (branch) => {
             this.dialogs[line.branch] = branch;
           });
         }
       });
     });
   }
-  
+
   start(name) {
     const dialog = this.dialogs[name];
-    for (let i = 0; i < dialog.length; i++) {
+    for (let i = 0; i < dialog.length; i += 1) {
       const line = dialog[i];
-      
+
       this.scene.queue.enqueue(() => {
-        this.scene.characters[line.person].say(line[this.scene.textField], line.branch, this.scene.queue.advance.bind(this.scene));
+        this.scene.characters[line.person].say(
+          line[this.scene.textField],
+          line.branch,
+          this.scene.queue.advance.bind(this.scene),
+        );
       });
 
       if (line.branch) {
@@ -35,16 +39,18 @@ export default class DialogManager extends GameObject {
         shuffle(branchLines);
 
         this.scene.queue.enqueue(() => {
-          this.scene.characters['Player'].choose(branchLines, this.scene.queue.advance.bind(this.scene));
+          this.scene.characters.Player.choose(
+            branchLines,
+            this.scene.queue.advance.bind(this.scene),
+          );
         });
       }
     }
-    
+
     if (locationQuery.skip > 0) {
       this.scene.queue.skip(locationQuery.skip);
     }
-    
+
     this.scene.queue.advance();
   }
 }
-  

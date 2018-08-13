@@ -1,4 +1,4 @@
-import { GameObject } from '.';
+import GameObject from './GameObject';
 
 export default class TextBubble extends GameObject {
   constructor(scene, string, slug, x, y, flipped, callback, heightAdjustment = 0) {
@@ -6,7 +6,7 @@ export default class TextBubble extends GameObject {
     this.string = string;
     this.callback = callback;
     this.flipped = flipped;
-    
+
     this.width = Math.min(900, Math.round(string.length * 1.5) + 600);
     const textWidth = this.width - 360;
     this.text = scene.add.text(320, 36, this.string, {
@@ -18,20 +18,24 @@ export default class TextBubble extends GameObject {
     this.text.setWordWrapWidth(null);
 
     this.container = scene.add.container(x - this.width / 2, flipped ? y + 160 : y - this.height);
-    this.background = scene.add.graphics().fillStyle(0x3240BF).fillRect(0, 0, this.width, this.height);
+    this.background = scene.add.graphics()
+      .fillStyle(0x3240BF)
+      .fillRect(0, 0, this.width, this.height);
     this.face = scene.add.image(0, this.height, 'atlas', slug).setOrigin(0, 1);
-    this.triangle = scene.add.image(this.width / 2, flipped ? 0 : this.height, 'atlas', 'triangle').setOrigin(0, 0).setAngle(flipped ? 180 : 0);
+    this.triangle = scene.add.image(this.width / 2, flipped ? 0 : this.height, 'atlas', 'triangle')
+      .setOrigin(0, 0)
+      .setAngle(flipped ? 180 : 0);
     this.container.add([this.background, this.face, this.triangle, this.text]);
     this.animate();
   }
-  
+
   animate() {
     this.animating = true;
     this.skipAnimation = false;
     const characterCount = this.textWithLineBreaks.length;
     const characterDelay = 12;
     let currentText = '';
-    for (let index = 0; index < characterCount; index++) {
+    for (let index = 0; index < characterCount; index += 1) {
       currentText += this.textWithLineBreaks[index];
       this.scene.time.delayedCall(characterDelay * index, (text) => {
         if (!this.skipAnimation) {
@@ -59,12 +63,10 @@ export default class TextBubble extends GameObject {
       this.skipAnimation = true;
       this.animating = false;
       this.text.setText(this.textWithLineBreaks);
-      this.animationComplete();
+      if (this.animationComplete) {
+        this.animationComplete();
+      }
     }
-  }
-
-  animationComplete() {
-    // This method is meant to be overridden
   }
 
   clickCallback() {
@@ -75,11 +77,11 @@ export default class TextBubble extends GameObject {
       this.callback();
     }
   }
-  
+
   handleCallback() {
     this.scene.input.on('pointerdown', this.clickCallback, this);
   }
-  
+
   remove() {
     this.scene.input.off('pointerdown', this.clickCallback, this);
     this.container.destroy();

@@ -1,31 +1,32 @@
-import 'phaser';
+import Phaser from 'phaser';
 import 'reset-css';
 import '../assets/scss/styles.scss';
-import { Main } from './scenes';
+import Main from './scenes/Main';
 
-const width = 1920, height = 1080;
+const width = 1920;
+const height = 1080;
 
-var game = new Phaser.Game({
+const game = new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'container',
-  width: width,
-  height: height,
+  width,
+  height,
   scene: Main,
   backgroundColor: 0x1b1862,
 });
 
 function resize() {
   const ratio = width / height;
-  let canvas_height = window.innerHeight;
-  let canvas_width = canvas_height * ratio;
+  let canvasHeight = window.innerHeight;
+  let canvasWidth = canvasHeight * ratio;
 
-  if (canvas_width > window.innerWidth) {
-    canvas_width = window.innerWidth;
-    canvas_height = canvas_width/ratio;
+  if (canvasWidth > window.innerWidth) {
+    canvasWidth = window.innerWidth;
+    canvasHeight = canvasWidth / ratio;
   }
 
-  game.canvas.style.width = canvas_width + 'px';
-  game.canvas.style.height = canvas_height + 'px';
+  game.canvas.style.width = `${canvasWidth}px`;
+  game.canvas.style.height = `${canvasHeight}px`;
 }
 
 window.addEventListener('load', resize, false);

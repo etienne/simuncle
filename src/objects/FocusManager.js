@@ -1,4 +1,4 @@
-import { GameObject } from '.';
+import GameObject from './GameObject';
 
 export default class FocusManager extends GameObject {
   constructor(scene) {
