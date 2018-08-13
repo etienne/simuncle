@@ -69,7 +69,7 @@ export default class StatsManager extends GameObject {
           y: barInitialY,
           duration: 800,
           ease: 'Elastic',
-          onStart: (tween, targets) => { targets[0].y += Math.abs(damage) * 2; }, // eslint-disable-line no-param-reassign
+          onStart: (tween, targets) => { targets[0].y += Math.abs(damage) * 1.5; }, // eslint-disable-line no-param-reassign
         });
 
         // if (statName === 'racism') {
@@ -86,7 +86,7 @@ export default class StatsManager extends GameObject {
     });
 
     if (didInflictDamage) {
-      setTimeout(this.scene.queue.advance.bind(this.scene), 2000);
+      setTimeout(this.scene.queue.advance.bind(this.scene), 1500);
     } else {
       this.scene.queue.advance();
     }
