@@ -13,7 +13,7 @@ export default class Main extends Phaser.Scene {
     // Load assets
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
     ['config', 'strings'].map(key => this.load.text(key, this.googleSheets.getSheetURL(`_${key}`)));
-    this.currentLanguage = localStorage.getItem('language') || 'fr';
+    this.currentLanguage = localStorage.getItem('language') || 'en';
     ['text', 'response', 'reaction'].forEach((field) => { this[`${field}Field`] = `${field}_${this.currentLanguage}`; });
     this.dialogs.load('intro');
 
