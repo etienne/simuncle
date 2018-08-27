@@ -25,22 +25,29 @@ export default class DialogManager extends GameObject {
     const dialog = this.dialogs[name];
     for (let i = 0; i < dialog.length; i += 1) {
       const line = dialog[i];
+      let branchLines;
+      let idleLine;
+
+      if (line.branch) {
+        branchLines = this.dialogs[line.branch];
+        idleLine = branchLines.pop();
+        shuffle(branchLines);
+      }
 
       this.scene.queue.enqueue(() => {
         this.scene.characters[line.person].say(
           line[this.scene.textField],
           line.branch,
           this.scene.queue.advance.bind(this.scene),
+          idleLine,
         );
       });
 
       if (line.branch) {
-        const branchLines = this.dialogs[line.branch];
-        shuffle(branchLines);
-
         this.scene.queue.enqueue(() => {
           this.scene.characters.Player.choose(
             branchLines,
+            line.person,
             this.scene.queue.advance.bind(this.scene),
           );
         });

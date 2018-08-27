@@ -1,11 +1,12 @@
 import GameObject from './GameObject';
 
 export default class TextBubble extends GameObject {
-  constructor(scene, string, slug, x, y, flipped, callback, heightAdjustment = 0) {
+  constructor(scene, { flipped, x, y, slug, name }, string, callback, heightAdjustment = 0) {
     super(scene);
     this.string = string;
     this.callback = callback;
     this.flipped = flipped;
+    this.personName = name;
 
     this.width = Math.min(900, Math.round(string.length * 1.5) + 600);
     const textWidth = this.width - 360;

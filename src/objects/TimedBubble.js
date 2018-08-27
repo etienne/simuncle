@@ -1,9 +1,10 @@
 import TextBubble from './TextBubble';
 
 export default class TimedBubble extends TextBubble {
-  constructor(scene, text, slug, x, y, flipped, callback, timeLimit = 18000) {
-    super(scene, text, slug, x, y, flipped, callback);
+  constructor(scene, person, text, callback, idleLine, timeLimit = 18000) {
+    super(scene, person, text, callback);
     this.timeLimit = timeLimit;
+    this.idleLine = idleLine;
   }
 
   animationComplete() {
@@ -30,7 +31,10 @@ export default class TimedBubble extends TextBubble {
         y: { value: this.height, duration: this.timeLimit },
         alpha: { value: 1, duration: this.timeLimit * 0.05, delay: this.timeLimit * 0.6 },
       },
-      onComplete: () => this.scene.characters.Player.sayNothing(),
+      onComplete: () => {
+        this.remove();
+        this.scene.characters.Player.handleIdleResponse(this.idleLine, this.personName);
+      },
     });
   }
 

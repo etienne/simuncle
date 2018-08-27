@@ -1,8 +1,8 @@
 import TextBubble from './TextBubble';
 
 export default class ActionBubble extends TextBubble {
-  constructor(scene, text, slug, x, y, flipped, chooseCallback, dismissCallback) {
-    super(scene, text, slug, x, y, flipped, chooseCallback, 17 + 60 + 17);
+  constructor(scene, person, text, chooseCallback, dismissCallback) {
+    super(scene, person, text, chooseCallback, 17 + 60 + 17);
 
     const backgroundHeight = 17 + 60 + 17;
     const buttonsBackground = scene
