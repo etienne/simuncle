@@ -37,7 +37,7 @@ export default class Person extends GameObject {
       this,
       line[this.scene.responseField],
       chooseCallback,
-      dismissCallback
+      dismissCallback,
     );
 
     // Draw dots
@@ -96,7 +96,11 @@ export default class Person extends GameObject {
     this.scene.queue.prequeue(this.scene.stats.handleDamage.bind(this.scene.stats, line));
 
     if (line[this.scene.reactionField] && line[this.scene.reactionField] !== ' ') {
-      person.say(line[this.scene.reactionField], null, this.scene.queue.advance.bind(this.scene));
+      person.say(
+        line[this.scene.reactionField],
+        null,
+        this.scene.queue.advance.bind(this.scene),
+      );
     } else {
       this.scene.queue.advance();
     }
@@ -106,6 +110,10 @@ export default class Person extends GameObject {
     this.slideOutDots();
     const player = this.scene.characters.Player;
     player.textBubble.remove();
-    player.say(line[this.scene.responseField], null, () => { this.handleReaction(line, interlocutor); });
+    player.say(
+      line[this.scene.responseField],
+      null,
+      () => { this.handleReaction(line, interlocutor); },
+    );
   }
 }
