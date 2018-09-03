@@ -74,7 +74,7 @@ export default class Person extends GameObject {
   slideInDots() {
     this.scene.tweens.add({
       targets: this.dots,
-      y: '-=60',
+      y: 1040,
       duration: 600,
       ease: 'Power2',
     });
@@ -83,7 +83,7 @@ export default class Person extends GameObject {
   slideOutDots() {
     this.scene.tweens.add({
       targets: this.dots,
-      y: '+=60',
+      y: 1100,
       duration: 200,
       ease: 'Cubic.In',
       onComplete: () => this.dots.removeAll(),
