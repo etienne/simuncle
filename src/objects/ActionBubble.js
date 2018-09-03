@@ -2,17 +2,10 @@ import TextBubble from './TextBubble';
 
 export default class ActionBubble extends TextBubble {
   constructor(scene, person, text, chooseCallback, dismissCallback) {
-    super(scene, person, text, chooseCallback, 17 + 60 + 17);
-
-    const backgroundHeight = 17 + 60 + 17;
-    const buttonsBackground = scene
-      .add
-      .graphics()
-      .fillStyle(0x2C36A8)
-      .fillRect(0, this.height - backgroundHeight, this.width, backgroundHeight);
+    super(scene, person, text, chooseCallback, 25);
 
     // Set up Dismiss button
-    this.dismissButton = scene.add.image(this.width - 17 - 155 - 12, this.height - 7, 'atlas', 'dismiss').setOrigin(1, 1).setInteractive();
+    this.dismissButton = scene.add.image(this.width - 25 - 90 - 25, this.height, 'atlas', 'dismiss').setOrigin(1, 0.5).setInteractive();
     this.dismissButton.on('focus', () => this.dismissButton.setFrame('dismiss_focus'));
     this.dismissButton.on('blur', () => this.dismissButton.setFrame('dismiss'));
     this.dismissButton.on('pointerover', () => this.dismissButton.setFrame('dismiss_hover'));
@@ -21,7 +14,7 @@ export default class ActionBubble extends TextBubble {
     this.scene.focus.register(this.dismissButton);
 
     // Set up Choose button
-    this.chooseButton = scene.add.image(this.width - 17, this.height - 7, 'atlas', 'choose').setOrigin(1, 1).setInteractive();
+    this.chooseButton = scene.add.image(this.width - 25, this.height, 'atlas', 'choose').setOrigin(1, 0.5).setInteractive();
     this.chooseButton.on('focus', () => this.chooseButton.setFrame('choose_focus'));
     this.chooseButton.on('blur', () => this.chooseButton.setFrame('choose'));
     this.chooseButton.on('pointerover', () => this.chooseButton.setFrame('choose_hover'));
@@ -33,7 +26,7 @@ export default class ActionBubble extends TextBubble {
     });
     this.scene.focus.register(this.chooseButton);
 
-    this.container.add([buttonsBackground, this.chooseButton, this.dismissButton]);
+    this.container.add([this.chooseButton, this.dismissButton]);
     this.container.bringToTop(this.face);
     this.chooseCallback = chooseCallback;
 
@@ -49,6 +42,8 @@ export default class ActionBubble extends TextBubble {
       this.scene.focus.unregister(this.dismissButton);
       this.dismissButton.setAlpha(0.25);
     }
+
+    this.finishAnimation();
   }
 
   choose() {

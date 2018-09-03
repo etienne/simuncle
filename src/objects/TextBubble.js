@@ -8,21 +8,21 @@ export default class TextBubble extends GameObject {
     this.flipped = flipped;
     this.personName = name;
 
-    this.width = Math.min(900, Math.round(string.length * 1.5) + 600);
-    const textWidth = this.width - 360;
-    this.text = scene.add.text(320, 36, this.string, {
+    this.width = Math.min(900, Math.round(string.length * 2.5) + 400);
+    const textWidth = this.width - 230;
+    this.text = scene.add.text(190, 42, this.string, {
       ...scene.defaultTextSettings,
       wordWrap: { width: textWidth },
     });
-    this.height = Math.max(260, this.text.height + 36 + 36 + heightAdjustment);
+    this.height = this.text.height + 42 + 42 + heightAdjustment;
     this.textWithLineBreaks = this.text.runWordWrap(this.text.text);
     this.text.setWordWrapWidth(null);
 
-    this.container = scene.add.container(x - this.width / 2, flipped ? y + 160 : y - this.height);
+    this.container = scene.add.container(x - this.width / 2, flipped ? y + 180 : y - this.height - 20);
     this.background = scene.add.graphics()
-      .fillStyle(0x3240BF)
+      .fillStyle(0x2C36A8)
       .fillRect(0, 0, this.width, this.height);
-    this.face = scene.add.image(0, this.height, 'atlas', slug).setOrigin(0, 1);
+    this.face = scene.add.image(0, this.height / 2, 'atlas', slug);
     this.triangle = scene.add.image(this.width / 2, flipped ? 0 : this.height, 'atlas', 'triangle')
       .setOrigin(0, 0)
       .setAngle(flipped ? 180 : 0);
