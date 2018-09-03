@@ -39,7 +39,7 @@ export default class TextBubble extends GameObject {
     for (let index = 0; index < characterCount; index += 1) {
       currentText += this.textWithLineBreaks[index];
       this.scene.time.delayedCall(characterDelay * index, (text) => {
-        if (!this.skipAnimation) {
+        if (!this.skipAnimation && !!this.text.scene) {
           this.text.setText(text);
         }
       }, [currentText], this);
@@ -63,7 +63,9 @@ export default class TextBubble extends GameObject {
     if (this.animating) {
       this.skipAnimation = true;
       this.animating = false;
-      this.text.setText(this.textWithLineBreaks);
+      if (this.text.scene) {
+        this.text.setText(this.textWithLineBreaks);
+      }
       if (this.animationComplete) {
         this.animationComplete();
       }
