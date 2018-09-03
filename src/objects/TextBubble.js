@@ -1,12 +1,13 @@
 import GameObject from './GameObject';
 
 export default class TextBubble extends GameObject {
-  constructor(scene, { flipped, x, y, slug, name }, string, callback, heightAdjustment = 0) {
+  constructor(scene, { flipped, x, y, slug, name }, string, callback, { heightAdjustment = 0, isFirst }) {
     super(scene);
     this.string = string;
     this.callback = callback;
     this.flipped = flipped;
     this.personName = name;
+    this.isFirst = isFirst;
 
     this.width = Math.min(900, Math.round(string.length * 2.5) + 400);
     const textWidth = this.width - 230;
@@ -27,12 +28,13 @@ export default class TextBubble extends GameObject {
       .setOrigin(0, 0)
       .setAngle(flipped ? 180 : 0);
     this.container.add([this.background, this.face, this.triangle, this.text]);
+
+    this.animating = true;
+    this.skipAnimation = false;
     this.animate();
   }
 
   animate() {
-    this.animating = true;
-    this.skipAnimation = false;
     const characterCount = this.textWithLineBreaks.length;
     const characterDelay = 12;
     let currentText = '';
@@ -53,8 +55,8 @@ export default class TextBubble extends GameObject {
       targets: [this.container],
       alpha: 1,
       y: `${this.flipped ? '-' : '+'}=${animationOffset}`,
-      duration: 300,
-      ease: 'Quad.easeOut',
+      duration: 400,
+      ease: 'Power2',
       onComplete: this.handleCallback.bind(this),
     });
   }

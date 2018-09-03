@@ -17,8 +17,8 @@ export default class Person extends GameObject {
 
   say(text, branchName, callback, idleLine) {
     this.textBubble = branchName
-      ? new TimedBubble(this.scene, this, text, callback, idleLine)
-      : new TextBubble(this.scene, this, text, callback);
+      ? new TimedBubble(this.scene, this, text, callback, { idleLine })
+      : new TextBubble(this.scene, this, text, callback, {});
   }
 
   choose(branchLines, interlocutor, callback, index = 0) {
@@ -38,6 +38,7 @@ export default class Person extends GameObject {
       line[this.scene.responseField],
       chooseCallback,
       dismissCallback,
+      { isFirst: index === 0 },
     );
 
     // Draw dots

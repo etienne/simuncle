@@ -1,8 +1,8 @@
 import TextBubble from './TextBubble';
 
 export default class TimedBubble extends TextBubble {
-  constructor(scene, person, text, callback, idleLine, timeLimit = 18000) {
-    super(scene, person, text, callback);
+  constructor(scene, person, text, callback, { idleLine, timeLimit = 18000 }) {
+    super(scene, person, text, callback, {});
     this.timeLimit = timeLimit;
     this.idleLine = idleLine;
   }

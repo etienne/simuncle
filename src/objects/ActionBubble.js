@@ -1,8 +1,8 @@
 import TextBubble from './TextBubble';
 
 export default class ActionBubble extends TextBubble {
-  constructor(scene, person, text, chooseCallback, dismissCallback) {
-    super(scene, person, text, chooseCallback, 25);
+  constructor(scene, person, text, chooseCallback, dismissCallback, { isFirst }) {
+    super(scene, person, text, chooseCallback, { heightAdjustment: 25, isFirst });
 
     // Set up Dismiss button
     this.dismissButton = scene.add.image(this.width - 25 - 90 - 25, this.height, 'atlas', 'dismiss').setOrigin(1, 0.5).setInteractive();
@@ -42,23 +42,61 @@ export default class ActionBubble extends TextBubble {
       this.scene.focus.unregister(this.dismissButton);
       this.dismissButton.setAlpha(0.25);
     }
-
-    this.finishAnimation();
   }
 
   choose() {
     this.chooseCallback();
-    this.remove();
+    this.remove(true);
   }
 
   handleCallback() {
     this.scene.input.on('pointerdown', this.finishAnimation, this);
   }
 
-  remove() {
+  animate() {
+    if (this.isFirst) {
+      super.animate();
+      this.finishAnimation();
+    } else {
+      const animationOffset = 100;
+      this.animating = true;
+      this.finishAnimation();
+      this.container.x = this.container.x + animationOffset;
+      this.scene.tweens.add({
+        targets: [this.container],
+        alpha: 1,
+        x: `-=${animationOffset}`,
+        duration: 400,
+        ease: 'Power2',
+        onComplete: this.handleCallback.bind(this),
+      });
+    }
+  }
+
+  remove(choose) {
     this.scene.input.off('pointerdown', this.finishAnimation, this);
-    this.container.destroy();
     this.scene.focus.unregister(this.chooseButton);
     this.scene.focus.unregister(this.dismissButton);
+
+    if (choose) {
+      this.scene.tweens.add({
+        targets: [this.container],
+        alpha: 0,
+        y: '+=30',
+        duration: 150,
+        ease: 'Cubic.In',
+        onComplete: this.container.destroy,
+      });
+    } else {
+      const animationOffset = 80;
+      this.scene.tweens.add({
+        targets: [this.container],
+        alpha: 0,
+        x: `-=${animationOffset}`,
+        duration: 150,
+        ease: 'Cubic.In',
+        onComplete: this.container.destroy,
+      });
+    }
   }
 }
