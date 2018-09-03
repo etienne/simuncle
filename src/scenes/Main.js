@@ -93,45 +93,20 @@ export default class Main extends Phaser.Scene {
 
     // Set up start button
     const startBackground = this.add.image(0, 0, 'atlas', 'start');
-    const startText = this.add.text(0, 0, this.l.start, this.defaultTextSettings);
-    const startTextX = -startText.width / 2;
-    const startTextY = -16;
-    startText.x = startTextX;
-    startText.y = startTextY;
     const start = this.add.container(960, 925)
       .setAlpha(0)
       .setSize(startBackground.width, startBackground.height)
       .setInteractive();
-    start.add([startBackground, startText]);
-    start.on('focus', () => {
-      startBackground.setFrame('start_focus');
-      startText.x = startTextX - 2;
-      startText.y = startTextY + 2;
-    });
-    start.on('blur', () => {
-      startBackground.setFrame('start');
-      startText.x = startTextX;
-      startText.y = startTextY;
-    });
-    start.on('pointerover', () => {
-      startBackground.setFrame('start_hover');
-      startText.x = startTextX - 2;
-      startText.y = startTextY + 2;
-    });
-    start.on('pointerout', () => {
-      startBackground.setFrame('start');
-      startText.x = startTextX;
-      startText.y = startTextY;
-    });
+    start.add([startBackground]);
+    start.on('focus', () => startBackground.setFrame('start_focus'));
+    start.on('blur', () => startBackground.setFrame('start'));
+    start.on('pointerover', () => startBackground.setFrame('start_hover'));
+    start.on('pointerout', () => startBackground.setFrame('start'));
     start.on('pointerdown', () => {
       startBackground.setFrame('start_active');
-      startText.x = startTextX + 3;
-      startText.y = startTextY - 3;
     });
     start.on('pointerup', () => {
       startBackground.setFrame('start');
-      startText.x = startTextX;
-      startText.y = startTextY;
       this.tweens.add({
         targets: [title, start, languageSwitch],
         alpha: 0,

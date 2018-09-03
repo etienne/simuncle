@@ -69,7 +69,6 @@ export default class Person extends GameObject {
       this.dots.add(dot);
     }
     this.dots.x = 1920 / 2 - (((branchLines.length - 1) * dotOffset) / 2);
-    console.log(this.dots.x);    
   }
 
   slideInDots() {
