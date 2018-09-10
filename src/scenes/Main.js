@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { Person, DialogManager, FocusManager, GoogleSheetManager, QueueManager, StatsManager } from '../objects';
+import { Button, Person, DialogManager, FocusManager, GoogleSheetManager, QueueManager, StatsManager } from '../objects';
 
 export default class Main extends Phaser.Scene {
   preload() {
@@ -91,32 +91,23 @@ export default class Main extends Phaser.Scene {
       this.scene.restart();
     });
 
-    // Set up start button
-    const startBackground = this.add.image(0, 0, 'atlas', 'start');
-    const start = this.add.container(960, 925)
-      .setAlpha(0)
-      .setSize(startBackground.width, startBackground.height)
-      .setInteractive();
-    start.add([startBackground]);
-    start.on('focus', () => startBackground.setFrame('start_focus'));
-    start.on('blur', () => startBackground.setFrame('start'));
-    start.on('pointerover', () => startBackground.setFrame('start_hover'));
-    start.on('pointerout', () => startBackground.setFrame('start'));
-    start.on('pointerdown', () => {
-      startBackground.setFrame('start_active');
+    // Set up settings button
+    const settingsButton = new Button(this, 960 - 70, 925, 'settings', true, () => {
+      console.log('stititnginngngnsns');
     });
-    start.on('pointerup', () => {
-      startBackground.setFrame('start');
+
+    // Set up start button
+    const startButton = new Button(this, 960 + 70, 925, 'start', true, () => {
       this.tweens.add({
-        targets: [title, start, languageSwitch],
+        targets: [title, startButton.button, settingsButton.button, languageSwitch],
         alpha: 0,
         duration: 500,
         hold: 1500,
         onComplete: () => {
-          this.focus.unregister(start);
+          this.focus.unregister(startButton);
           this.focus.unregister(languageSwitch);
           this.dialogs.start('intro');
-          start.destroy();
+          startButton.remove();
           languageSwitch.destroy();
         },
       });
@@ -155,13 +146,13 @@ export default class Main extends Phaser.Scene {
     };
 
     this.tweens.add({
-      targets: [title, start],
+      targets: title,
       alpha: 1,
       duration: 500,
     });
 
     // Set up keyboard navigation
-    this.focus.register(start);
+    this.focus.register(startButton.button);
     this.focus.register(languageSwitch);
   }
 }
