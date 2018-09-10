@@ -8,7 +8,6 @@ export default class FocusManager extends GameObject {
     this.scene.input.keyboard.on('keydown_RIGHT', this.next, this);
     this.scene.input.keyboard.on('keydown_UP', this.previous, this);
     this.scene.input.keyboard.on('keydown_DOWN', this.next, this);
-    this.scene.input.keyboard.on('keydown_TAB', this.next, this);
     this.scene.input.keyboard.on('keydown_ENTER', this.activate, this);
     this.scene.input.keyboard.on('keydown_SPACE', this.activate, this);
     this.register(this.scene.input);

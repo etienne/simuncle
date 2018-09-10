@@ -92,12 +92,12 @@ export default class Main extends Phaser.Scene {
     });
 
     // Set up settings button
-    const settingsButton = new Button(this, 960 - 70, 925, 'settings', true, () => {
+    const settingsButton = new Button(this, 960 - 70, 925, 'settings', this.l.settings, { fadeIn: true }, () => {
       console.log('stititnginngngnsns');
     });
 
     // Set up start button
-    const startButton = new Button(this, 960 + 70, 925, 'start', true, () => {
+    const startButton = new Button(this, 960 + 70, 925, 'start', this.l.start, { fadeIn: true }, () => {
       this.tweens.add({
         targets: [title, startButton.button, settingsButton.button, languageSwitch],
         alpha: 0,
