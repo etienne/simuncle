@@ -11,7 +11,6 @@ export default class ActionBubble extends TextBubble {
     this.dismissButton.on('pointerover', () => this.dismissButton.setFrame('dismiss_hover'));
     this.dismissButton.on('pointerout', () => this.dismissButton.setFrame('dismiss'));
     this.dismissButton.on('pointerdown', () => this.dismissButton.setFrame('dismiss_active'));
-    this.scene.focus.register(this.dismissButton);
 
     // Set up Choose button
     this.chooseButton = scene.add.image(this.width - 25, this.height, 'atlas', 'choose').setOrigin(1, 0.5).setInteractive();
@@ -24,7 +23,6 @@ export default class ActionBubble extends TextBubble {
       this.chooseButton.setFrame('choose');
       this.choose();
     });
-    this.scene.focus.register(this.chooseButton);
 
     this.container.add([this.chooseButton, this.dismissButton]);
     this.container.bringToTop(this.face);
@@ -39,7 +37,6 @@ export default class ActionBubble extends TextBubble {
         this.remove();
       });
     } else {
-      this.scene.focus.unregister(this.dismissButton);
       this.dismissButton.setAlpha(0.25);
     }
   }
@@ -75,8 +72,6 @@ export default class ActionBubble extends TextBubble {
 
   remove(choose) {
     this.scene.input.off('pointerdown', this.finishAnimation, this);
-    this.scene.focus.unregister(this.chooseButton);
-    this.scene.focus.unregister(this.dismissButton);
 
     if (choose) {
       this.scene.tweens.add({

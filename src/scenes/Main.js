@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { Button, Person, DialogManager, FocusManager, GoogleSheetManager, QueueManager, StatsManager } from '../objects';
+import { Button, Person, DialogManager, GoogleSheetManager, QueueManager, StatsManager } from '../objects';
 
 export default class Main extends Phaser.Scene {
   preload() {
@@ -8,7 +8,6 @@ export default class Main extends Phaser.Scene {
     this.googleSheets = new GoogleSheetManager(this);
     this.queue = new QueueManager(this);
     this.stats = new StatsManager(this);
-    this.focus = new FocusManager(this);
 
     // Load assets
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
@@ -104,8 +103,6 @@ export default class Main extends Phaser.Scene {
         duration: 500,
         hold: 1500,
         onComplete: () => {
-          this.focus.unregister(startButton);
-          this.focus.unregister(languageSwitch);
           this.dialogs.start('intro');
           startButton.remove();
           languageSwitch.destroy();
@@ -150,9 +147,5 @@ export default class Main extends Phaser.Scene {
       alpha: 1,
       duration: 500,
     });
-
-    // Set up keyboard navigation
-    this.focus.register(startButton.button);
-    this.focus.register(languageSwitch);
   }
 }
