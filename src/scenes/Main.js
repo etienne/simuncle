@@ -3,6 +3,12 @@ import { Button, Person, DialogManager, GoogleSheetManager, QueueManager, StatsM
 
 export default class Main extends Phaser.Scene {
   preload() {
+    // Accessibility
+    this.statusContainer = document.getElementById('status');
+    while (this.sys.canvas.hasChildNodes()) {
+      this.sys.canvas.removeChild(this.sys.canvas.lastChild);
+    }
+    
     // Manage managers
     this.dialogs = new DialogManager(this);
     this.googleSheets = new GoogleSheetManager(this);
@@ -12,7 +18,7 @@ export default class Main extends Phaser.Scene {
     // Load assets
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
     ['config', 'strings'].map(key => this.load.text(key, this.googleSheets.getSheetURL(`_${key}`)));
-    this.currentLanguage = localStorage.getItem('language') || 'en';
+    this.setLanguage(localStorage.getItem('language') || 'en');
     ['text', 'response', 'reaction'].forEach((field) => { this[`${field}Field`] = `${field}_${this.currentLanguage}`; });
     this.dialogs.load('intro');
 
@@ -105,6 +111,7 @@ export default class Main extends Phaser.Scene {
         onComplete: () => {
           this.dialogs.start('intro');
           startButton.remove();
+          settingsButton.remove();
           languageSwitch.destroy();
         },
       });
@@ -147,5 +154,14 @@ export default class Main extends Phaser.Scene {
       alpha: 1,
       duration: 500,
     });
+  }
+
+  setLanguage(language) {
+    this.currentLanguage = language;
+    document.documentElement.lang = language;
+  }
+
+  updateStatus(text) {
+    this.statusContainer.textContent = text;
   }
 }

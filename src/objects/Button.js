@@ -6,10 +6,7 @@ export default class Button extends GameObject {
     this.image = image;
     this.callback = callback;
     this.button = this.scene.add.image(x, y, 'atlas', image).setInteractive();
-
-    this.fallback = document.createElement('button');
-    this.fallback.textContent = label;
-    this.scene.sys.canvas.appendChild(this.fallback);
+    this.createFallback('button', label);
 
     if (options.fadeIn) {
       this.button.alpha = 0;
@@ -20,16 +17,12 @@ export default class Button extends GameObject {
       });
     }
 
-    if (label) {
-      console.log(label);
-    }
-
-    this.button.on('focus', this.focus);
-    this.button.on('blur', this.blur);
-    this.button.on('pointerover', this.mouseover);
-    this.button.on('pointerout', this.mouseout);
-    this.button.on('pointerdown', this.active);
-    this.button.on('pointerup', this.click);
+    this.button.on('focus', this.focus.bind(this));
+    this.button.on('blur', this.blur.bind(this));
+    this.button.on('pointerover', this.mouseover.bind(this));
+    this.button.on('pointerout', this.mouseout.bind(this));
+    this.button.on('pointerdown', this.active.bind(this));
+    this.button.on('pointerup', this.click.bind(this));
 
     this.fallback.onfocus = this.focus.bind(this);
     this.fallback.onblur = this.blur.bind(this);
@@ -68,6 +61,6 @@ export default class Button extends GameObject {
 
   remove() {
     this.button.destroy();
-    this.fallback.remove();
+    this.removeFallback();
   }
 }

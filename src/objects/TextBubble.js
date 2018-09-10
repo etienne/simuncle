@@ -32,6 +32,10 @@ export default class TextBubble extends GameObject {
     this.animating = true;
     this.skipAnimation = false;
     this.animate();
+
+    // Accessibility
+    const verb = this.personName === 'Player' ? this.scene.l.say : this.scene.l.says;
+    this.scene.updateStatus(`${this.scene.l[this.personName]} ${verb}: ${string}`);
   }
 
   animate() {
