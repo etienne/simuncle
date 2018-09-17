@@ -17,6 +17,12 @@ export default class Button extends GameObject {
       });
     }
 
+    if (options.disabled) {
+      this.disable();
+    } else {
+      this.enable();
+    }
+
     this.button.on('focus', this.focus.bind(this));
     this.button.on('blur', this.blur.bind(this));
     this.button.on('pointerover', this.mouseover.bind(this));
@@ -38,11 +44,15 @@ export default class Button extends GameObject {
   }
 
   mouseout() {
-    this.button.setFrame(this.image);
+    if (!this.disabled) {
+      this.button.setFrame(this.image);
+    }
   }
 
   mouseover() {
-    this.button.setFrame(`${this.image}_hover`);
+    if (!this.disabled) {
+      this.button.setFrame(`${this.image}_hover`);
+    }
   }
 
   active() {
@@ -50,13 +60,27 @@ export default class Button extends GameObject {
   }
 
   activate() {
-    this.active();
-    this.scene.time.delayedCall(20, this.click.bind(this));
+    if (!this.disabled) {
+      this.active();
+      this.scene.time.delayedCall(20, this.click.bind(this));
+    }
   }
 
   click() {
     this.mouseout();
     this.callback();
+  }
+
+  enable() {
+    this.disabled = false;
+    this.button.setFrame(this.image);
+    this.button.alpha = 1;
+  }
+
+  disable() {
+    this.disabled = true;
+    this.button.setFrame(`${this.image}_disabled`);
+    this.button.alpha = 0.8;
   }
 
   remove() {
