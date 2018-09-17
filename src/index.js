@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import 'reset-css';
 import '../assets/scss/styles.scss';
 import Main from './scenes/Main';
+import Settings from './scenes/Settings';
 
 const width = 1920;
 const height = 1080;
@@ -11,7 +12,7 @@ const game = new Phaser.Game({
   parent: 'container',
   width,
   height,
-  scene: Main,
+  scene: [Main, Settings],
   backgroundColor: 0x1b1862,
 });
 

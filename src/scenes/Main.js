@@ -2,13 +2,17 @@ import Phaser from 'phaser';
 import { Button, Person, DialogManager, GoogleSheetManager, QueueManager, StatsManager } from '../objects';
 
 export default class Main extends Phaser.Scene {
+  constructor() {
+    super({ key: 'main' });
+  }
+
   preload() {
     // Accessibility
     this.statusContainer = document.getElementById('status');
     while (this.sys.canvas.hasChildNodes()) {
       this.sys.canvas.removeChild(this.sys.canvas.lastChild);
     }
-    
+
     // Manage managers
     this.dialogs = new DialogManager(this);
     this.googleSheets = new GoogleSheetManager(this);
@@ -97,12 +101,10 @@ export default class Main extends Phaser.Scene {
     });
 
     // Set up settings button
-    const settingsButton = new Button(this, 960 - 70, 925, 'settings', this.l.settings, { fadeIn: true }, () => {
-      console.log('stititnginngngnsns');
-    });
+    const settingsButton = new Button(this, 960 - 70, 925, 'settings', { fadeIn: true }, this.openSettings.bind(this));
 
     // Set up start button
-    const startButton = new Button(this, 960 + 70, 925, 'start', this.l.start, { fadeIn: true }, () => {
+    const startButton = new Button(this, 960 + 70, 925, 'start', { fadeIn: true }, () => {
       this.tweens.add({
         targets: [title, startButton.button, settingsButton.button, languageSwitch],
         alpha: 0,
@@ -163,5 +165,9 @@ export default class Main extends Phaser.Scene {
 
   updateStatus(text) {
     this.statusContainer.textContent = text;
+  }
+
+  openSettings() {
+    this.scene.run('settings', { l: this.l, defaultTextSettings: this.defaultTextSettings });
   }
 }

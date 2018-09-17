@@ -8,3 +8,5 @@ export { default as Person } from './Person';
 export { default as TextBubble } from './TextBubble';
 export { default as ActionBubble } from './ActionBubble';
 export { default as TimedBubble } from './TimedBubble';
+export { default as Tab } from './Tab';
+export { default as TabBar } from './TabBar';

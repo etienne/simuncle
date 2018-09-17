@@ -1,12 +1,11 @@
 import GameObject from './GameObject';
 
 export default class Button extends GameObject {
-  constructor(scene, x, y, image, label, options, callback) {
+  constructor(scene, x, y, image, options, callback) {
     super(scene);
     this.image = image;
     this.callback = callback;
     this.button = this.scene.add.image(x, y, 'atlas', image).setInteractive();
-    this.createFallback('button', label);
 
     if (options.fadeIn) {
       this.button.alpha = 0;
@@ -22,6 +21,9 @@ export default class Button extends GameObject {
     } else {
       this.enable();
     }
+
+    const label = options.label ? options.label : scene.l[image];
+    this.createFallback('button', label);
 
     this.button.on('focus', this.focus.bind(this));
     this.button.on('blur', this.blur.bind(this));

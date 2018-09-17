@@ -6,11 +6,11 @@ export default class ActionBubble extends TextBubble {
     super(scene, person, text, chooseCallback, { heightAdjustment: 25, isFirst });
     this.chooseCallback = chooseCallback;
 
-    this.dismissButton = new Button(scene, this.width - 25 - 90 - 25, this.height, 'dismiss', 'Skip', { disabled: !dismissCallback }, () => {
+    this.dismissButton = new Button(scene, this.width - 45 - 25 - 90 - 25, this.height, 'dismiss', { disabled: !dismissCallback }, () => {
       scene.time.delayedCall(250, dismissCallback.bind(this));
       this.remove();
     });
-    this.chooseButton = new Button(scene, this.width - 25, this.height, 'choose', 'OK', {}, this.choose.bind(this));
+    this.chooseButton = new Button(scene, this.width - 45 - 25, this.height, 'choose', {}, this.choose.bind(this));
     this.container.add([this.chooseButton.button, this.dismissButton.button]);
   }
 
