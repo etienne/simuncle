@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { Button, Person, DialogManager, GoogleSheetManager, QueueManager, StatsManager } from '../objects';
+import { Button, Person, DialogManager, StringsManager, QueueManager, StatsManager } from '../objects';
+import localStrings from '../strings';
 
 export default class Main extends Phaser.Scene {
   constructor() {
@@ -15,16 +16,25 @@ export default class Main extends Phaser.Scene {
 
     // Manage managers
     this.dialogs = new DialogManager(this);
-    this.googleSheets = new GoogleSheetManager(this);
+    this.strings = new StringsManager(this);
     this.queue = new QueueManager(this);
     this.stats = new StatsManager(this);
 
     // Load assets
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
-    ['config', 'strings'].map(key => this.load.text(key, this.googleSheets.getSheetURL(`_${key}`)));
+    ['config', 'strings'].map(key => this.load.text(key, this.strings.getSheetURL(`_${key}`)));
     this.setLanguage(localStorage.getItem('language') || 'en');
     ['text', 'response', 'reaction'].forEach((field) => { this[`${field}Field`] = `${field}_${this.currentLanguage}`; });
     this.dialogs.load('intro');
+    
+    // Handle error when loading remote text files
+    this.load.on('loaderror', ({ key }) => {
+      if (localStrings[key]) {
+        this.cache.text.add(key, localStrings[key]);
+      } else {
+        console.error(`Could not load strings "${key}" locally`);
+      }
+    })
 
     // Configure things
     this.defaultTextSettings = {
@@ -40,7 +50,7 @@ export default class Main extends Phaser.Scene {
   create() {
     // Parse config
     this.config = {};
-    GoogleSheetManager.parseCSV(this.cache.text.get('config')).forEach((config) => {
+    StringsManager.parseCSV(this.cache.text.get('config')).forEach((config) => {
       const isArray = ['languages', 'stats', 'starting_stats'].indexOf(config.key) !== -1;
       this.config[config.key] = isArray ? config.value.split(',') : config.value;
     });
@@ -48,7 +58,7 @@ export default class Main extends Phaser.Scene {
     // Parse strings
     this.strings = {};
     this.config.languages.forEach((language) => { this.strings[language] = {}; });
-    GoogleSheetManager.parseCSV(this.cache.text.get('strings')).forEach((string) => {
+    StringsManager.parseCSV(this.cache.text.get('strings')).forEach((string) => {
       this.config.languages.forEach((language) => {
         this.strings[language][string.key] = string[language];
       });

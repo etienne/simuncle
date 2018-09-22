@@ -1,7 +1,7 @@
 export { default as GameObject } from './GameObject';
 export { default as Button } from './Button';
 export { default as DialogManager } from './DialogManager';
-export { default as GoogleSheetManager } from './GoogleSheetManager';
+export { default as StringsManager } from './StringsManager';
 export { default as QueueManager } from './QueueManager';
 export { default as StatsManager } from './StatsManager';
 export { default as Person } from './Person';

@@ -1,7 +1,8 @@
 import Papa from 'papaparse';
 import GameObject from './GameObject';
+import localStrings from '../strings';
 
-export default class GoogleSheetManager extends GameObject {
+export default class StringsManager extends GameObject {
   constructor(scene) {
     super(scene);
     this.sheetId = '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg';
@@ -20,6 +21,14 @@ export default class GoogleSheetManager extends GameObject {
       download: true,
       header: true,
       complete: results => onComplete(results.data),
+      error: () => {
+        console.warn(`Dialog "${name}" could not be loaded remotely; attempting to load locally`);
+        if (localStrings[name]) {
+          onComplete(localStrings[name])
+        } else {
+          console.error(`Dialog "${name}" could not be loaded locally either`);
+        }
+      },
     });
   }
 }

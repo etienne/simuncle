@@ -1,5 +1,6 @@
 import { shuffle, locationQuery } from '../helpers';
 import GameObject from './GameObject';
+import StringsManager from './StringsManager';
 
 export default class DialogManager extends GameObject {
   constructor(scene) {
@@ -8,12 +9,12 @@ export default class DialogManager extends GameObject {
   }
 
   load(entryPoint) {
-    this.scene.googleSheets.fetchSheet(entryPoint, (dialog) => {
+    this.scene.strings.fetchSheet(entryPoint, (dialog) => {
       this.dialogs[entryPoint] = dialog;
 
       dialog.forEach((line) => {
         if (line.branch) {
-          this.scene.googleSheets.fetchSheet(line.branch, (branch) => {
+          this.scene.strings.fetchSheet(line.branch, (branch) => {
             this.dialogs[line.branch] = branch;
           });
         }
