@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { Button, Person, DialogManager, GoogleSheetManager, QueueManager, StatsManager } from '../objects';
+import { parseCSV } from '../helpers';
+import { Button, Person, DialogManager, QueueManager, StatsManager } from '../objects';
 
 export default class Main extends Phaser.Scene {
   constructor() {
@@ -15,25 +16,15 @@ export default class Main extends Phaser.Scene {
 
     // Manage managers
     this.dialogs = new DialogManager(this);
-    this.googleSheets = new GoogleSheetManager(this);
     this.queue = new QueueManager(this);
     this.stats = new StatsManager(this);
 
     // Load assets
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
-    ['_config', '_strings'].map(key => this.load.text(key, this.googleSheets.getSheetURL(key)));
+    ['_config', '_strings'].map(key => this.load.text(key, this.dialogs.getSheetURL(key)));
     this.setLanguage(localStorage.getItem('language') || 'en');
     ['text', 'response', 'reaction'].forEach((field) => { this[`${field}Field`] = `${field}_${this.currentLanguage}`; });
     this.dialogs.load('intro');
-    
-    // Handle inaccessible remote assets
-    this.load.on('loaderror', ({ key, url }) => {
-      if (url.indexOf('http') !== -1) {
-        this.load.text(key, `text/${key}.csv`);
-      } else {
-        console.log(key, url);
-      }
-    })
 
     // Configure things
     this.defaultTextSettings = {
@@ -49,7 +40,7 @@ export default class Main extends Phaser.Scene {
   create() {
     // Parse config
     this.config = {};
-    GoogleSheetManager.parseCSV(this.cache.text.get('_config')).forEach((config) => {
+    parseCSV(this.cache.text.get('_config')).forEach((config) => {
       const isArray = ['languages', 'stats', 'starting_stats'].indexOf(config.key) !== -1;
       this.config[config.key] = isArray ? config.value.split(',') : config.value;
     });
@@ -57,7 +48,7 @@ export default class Main extends Phaser.Scene {
     // Parse strings
     this.strings = {};
     this.config.languages.forEach((language) => { this.strings[language] = {}; });
-    GoogleSheetManager.parseCSV(this.cache.text.get('_strings')).forEach((string) => {
+    parseCSV(this.cache.text.get('_strings')).forEach((string) => {
       this.config.languages.forEach((language) => {
         this.strings[language][string.key] = string[language];
       });
