@@ -21,10 +21,19 @@ export default class Main extends Phaser.Scene {
 
     // Load assets
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
-    ['config', 'strings'].map(key => this.load.text(key, this.googleSheets.getSheetURL(`_${key}`)));
+    ['_config', '_strings'].map(key => this.load.text(key, this.googleSheets.getSheetURL(key)));
     this.setLanguage(localStorage.getItem('language') || 'en');
     ['text', 'response', 'reaction'].forEach((field) => { this[`${field}Field`] = `${field}_${this.currentLanguage}`; });
     this.dialogs.load('intro');
+    
+    // Handle inaccessible remote assets
+    this.load.on('loaderror', ({ key, url }) => {
+      if (url.indexOf('http') !== -1) {
+        this.load.text(key, `text/${key}.csv`);
+      } else {
+        console.log(key, url);
+      }
+    })
 
     // Configure things
     this.defaultTextSettings = {
@@ -40,7 +49,7 @@ export default class Main extends Phaser.Scene {
   create() {
     // Parse config
     this.config = {};
-    GoogleSheetManager.parseCSV(this.cache.text.get('config')).forEach((config) => {
+    GoogleSheetManager.parseCSV(this.cache.text.get('_config')).forEach((config) => {
       const isArray = ['languages', 'stats', 'starting_stats'].indexOf(config.key) !== -1;
       this.config[config.key] = isArray ? config.value.split(',') : config.value;
     });
@@ -48,7 +57,7 @@ export default class Main extends Phaser.Scene {
     // Parse strings
     this.strings = {};
     this.config.languages.forEach((language) => { this.strings[language] = {}; });
-    GoogleSheetManager.parseCSV(this.cache.text.get('strings')).forEach((string) => {
+    GoogleSheetManager.parseCSV(this.cache.text.get('_strings')).forEach((string) => {
       this.config.languages.forEach((language) => {
         this.strings[language][string.key] = string[language];
       });
