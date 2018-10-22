@@ -10,8 +10,6 @@ export default class DialogManager extends GameObject {
     this.scene.load.on('loaderror', ({ key, type, url }) => {
       if (type === 'text' && url.indexOf('http') !== -1) {
         this.scene.load.text(key, `text/${key}.csv`);
-      } else {
-        console.log(key, url);
       }
     });
   }

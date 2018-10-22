@@ -13,7 +13,12 @@ export default class Tab extends Button {
     this.leftCap.setOrigin(0, 0);
     this.rightCap.setOrigin(1, 0);
 
-    this.label = scene.add.text(this.leftCap.width, 14, scene.l[label], { ...scene.defaultTextSettings });
+    this.label = scene.add.text(
+      this.leftCap.width,
+      14,
+      scene.l[label],
+      { ...scene.defaultTextSettings },
+    );
 
     this.button.x = this.leftCap.width;
     this.button.scaleX = this.label.width / this.button.width;

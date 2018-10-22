@@ -1,7 +1,10 @@
 import GameObject from './GameObject';
 
 export default class TextBubble extends GameObject {
-  constructor(scene, { flipped, x, y, slug, name }, string, callback, { heightAdjustment = 0, isFirst }) {
+  constructor(scene, { flipped, x, y, slug, name }, string, callback, {
+    heightAdjustment = 0,
+    isFirst,
+  }) {
     super(scene);
     this.string = string;
     this.callback = callback;
@@ -19,7 +22,10 @@ export default class TextBubble extends GameObject {
     this.textWithLineBreaks = this.text.runWordWrap(this.text.text);
     this.text.setWordWrapWidth(null);
 
-    this.container = scene.add.container(x - this.width / 2, flipped ? y + 180 : y - this.height - 20);
+    this.container = scene.add.container(
+      x - this.width / 2,
+      flipped ? y + 180 : y - this.height - 20,
+    );
     this.background = scene.add.graphics()
       .fillStyle(0x2C36A8)
       .fillRect(0, 0, this.width, this.height);
