@@ -1,9 +1,12 @@
 import Phaser from 'phaser';
-import { Button, Person, DialogManager, GoogleSheetManager, QueueManager, StatsManager } from '../objects';
+import config from '../config';
+import { getGoogleSheetUrl, parseCSV } from '../helpers';
+import { Button, Person, DialogManager, QueueManager, StatsManager } from '../objects';
 
 export default class Main extends Phaser.Scene {
   constructor() {
     super({ key: 'main' });
+    this.config = config;
   }
 
   preload() {
@@ -15,16 +18,15 @@ export default class Main extends Phaser.Scene {
 
     // Manage managers
     this.dialogs = new DialogManager(this);
-    this.googleSheets = new GoogleSheetManager(this);
     this.queue = new QueueManager(this);
     this.stats = new StatsManager(this);
 
     // Load assets
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
-    ['config', 'strings'].map(key => this.load.text(key, this.googleSheets.getSheetURL(`_${key}`)));
+    this.load.text('_strings', getGoogleSheetUrl('_strings'));
     this.setLanguage(localStorage.getItem('language') || 'en');
     ['text', 'response', 'reaction'].forEach((field) => { this[`${field}Field`] = `${field}_${this.currentLanguage}`; });
-    this.dialogs.load('intro');
+    this.dialogs.load(this.config.dialogEntryPoint);
 
     // Configure things
     this.defaultTextSettings = {
@@ -38,17 +40,10 @@ export default class Main extends Phaser.Scene {
   }
 
   create() {
-    // Parse config
-    this.config = {};
-    GoogleSheetManager.parseCSV(this.cache.text.get('config')).forEach((config) => {
-      const isArray = ['languages', 'stats', 'starting_stats'].indexOf(config.key) !== -1;
-      this.config[config.key] = isArray ? config.value.split(',') : config.value;
-    });
-
     // Parse strings
     this.strings = {};
     this.config.languages.forEach((language) => { this.strings[language] = {}; });
-    GoogleSheetManager.parseCSV(this.cache.text.get('strings')).forEach((string) => {
+    parseCSV(this.cache.text.get('_strings')).forEach((string) => {
       this.config.languages.forEach((language) => {
         this.strings[language][string.key] = string[language];
       });

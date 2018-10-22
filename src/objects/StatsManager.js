@@ -8,7 +8,7 @@ export default class StatsManager extends GameObject {
 
   initialize() {
     this.statsList = this.scene.config.stats;
-    this.startingStats = this.scene.config.starting_stats;
+    this.startingStats = this.scene.config.startingStats;
 
     // Add meters
     this.meters = this.scene.add.container(0, -180);

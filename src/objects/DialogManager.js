@@ -1,23 +1,38 @@
-import { shuffle, locationQuery } from '../helpers';
+import { getGoogleSheetUrl, shuffle, locationQuery, parseCSV } from '../helpers';
 import GameObject from './GameObject';
 
 export default class DialogManager extends GameObject {
   constructor(scene) {
     super(scene);
     this.dialogs = {};
+
+    // Handle unavailable remote assets
+    this.scene.load.on('loaderror', ({ key, type, url }) => {
+      if (type === 'text' && url.indexOf('http') !== -1) {
+        this.scene.load.text(key, `text/${key}.csv`);
+      } else {
+        console.log(key, url);
+      }
+    });
   }
 
-  load(entryPoint) {
-    this.scene.googleSheets.fetchSheet(entryPoint, (dialog) => {
-      this.dialogs[entryPoint] = dialog;
+  load(dialog) {
+    this.scene.load.text(dialog, getGoogleSheetUrl(dialog));
+    this.scene.load.on('load', ({ xhrLoader, type, url, key }) => {
+      if (type === 'text' && url.indexOf('sheet=_') === -1) {
+        this.add(key, xhrLoader.responseText);
+      }
+    });
+  }
 
-      dialog.forEach((line) => {
-        if (line.branch) {
-          this.scene.googleSheets.fetchSheet(line.branch, (branch) => {
-            this.dialogs[line.branch] = branch;
-          });
-        }
-      });
+  add(key, response) {
+    const dialog = parseCSV(response);
+    this.dialogs[key] = dialog;
+
+    dialog.forEach((line) => {
+      if (line.branch) {
+        this.load(line.branch);
+      }
     });
   }
 

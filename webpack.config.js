@@ -26,18 +26,9 @@ module.exports = {
         test: /\.woff$/,
         use: "url-loader",
       },
-      {
-        test: /\.csv$/,
-        loader: 'csv-loader',
-        options: {
-          dynamicTyping: true,
-          header: true,
-          skipEmptyLines: true,
-        },
-      },
     ],
   },
-  devtool: 'source-map',
+  // devtool: 'source-map',
   plugins: [
     new webpack.DefinePlugin({
       'CANVAS_RENDERER': JSON.stringify(true),
@@ -51,7 +42,15 @@ module.exports = {
       server: { baseDir: ['dist'] },
       ui: false,
     }),
-    new CopyWebpackPlugin(['assets/index.html', 'assets/images/cursor.png']),
+    new CopyWebpackPlugin([
+      'assets/index.html',
+      'assets/images/cursor.png',
+      {
+        from: 'assets/text/*.csv',
+        to: 'text',
+        flatten: true,
+      },
+    ]),
     new ExtractTextPlugin("styles.css"),
     new SpritesmithPlugin({
       src: {
