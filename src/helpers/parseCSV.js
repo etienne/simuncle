@@ -1,5 +1,5 @@
-import Papa from 'papaparse';
+const Papa = require('papaparse');
 
-export default function parseCSV(csv) {
+module.exports = function parseCSV(csv) {
   return Papa.parse(csv, { header: true }).data;
-}
+};

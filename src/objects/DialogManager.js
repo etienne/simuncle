@@ -1,12 +1,11 @@
-import { shuffle, locationQuery, parseCSV } from '../helpers';
+import { getGoogleSheetUrl, shuffle, locationQuery, parseCSV } from '../helpers';
 import GameObject from './GameObject';
 
 export default class DialogManager extends GameObject {
   constructor(scene) {
     super(scene);
-    this.sheetId = '1gQRnrK2_pidsdrJyipDWMRGfZs52Rj2kKx3jy4VBivg';
     this.dialogs = {};
-    
+
     // Handle unavailable remote assets
     this.scene.load.on('loaderror', ({ key, type, url }) => {
       if (type === 'text' && url.indexOf('http') !== -1) {
@@ -14,17 +13,13 @@ export default class DialogManager extends GameObject {
       } else {
         console.log(key, url);
       }
-    })
+    });
   }
 
-  getSheetURL(name) {
-    return `https://docs.google.com/spreadsheets/d/${this.sheetId}/gviz/tq?tqx=out:csv&sheet=${name}`;
-  }
-  
-  load(key) {
-    this.scene.load.text(key, this.getSheetURL(key));
+  load(dialog) {
+    this.scene.load.text(dialog, getGoogleSheetUrl(dialog));
     this.scene.load.on('load', ({ xhrLoader, type, url, key }) => {
-      if (type === 'text' && url.indexOf('_') === -1) {
+      if (type === 'text' && url.indexOf('sheet=_') === -1) {
         this.add(key, xhrLoader.responseText);
       }
     });
@@ -33,7 +28,7 @@ export default class DialogManager extends GameObject {
   add(key, response) {
     const dialog = parseCSV(response);
     this.dialogs[key] = dialog;
-    
+
     dialog.forEach((line) => {
       if (line.branch) {
         this.load(line.branch);

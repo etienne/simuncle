@@ -1,10 +1,12 @@
 import Phaser from 'phaser';
-import { parseCSV } from '../helpers';
+import config from '../config';
+import { getGoogleSheetUrl, parseCSV } from '../helpers';
 import { Button, Person, DialogManager, QueueManager, StatsManager } from '../objects';
 
 export default class Main extends Phaser.Scene {
   constructor() {
     super({ key: 'main' });
+    this.config = config;
   }
 
   preload() {
@@ -21,10 +23,10 @@ export default class Main extends Phaser.Scene {
 
     // Load assets
     this.load.atlas('atlas', 'atlas.png', 'atlas.json');
-    ['_config', '_strings'].map(key => this.load.text(key, this.dialogs.getSheetURL(key)));
+    this.load.text('_strings', getGoogleSheetUrl('_strings'));
     this.setLanguage(localStorage.getItem('language') || 'en');
     ['text', 'response', 'reaction'].forEach((field) => { this[`${field}Field`] = `${field}_${this.currentLanguage}`; });
-    this.dialogs.load('intro');
+    this.dialogs.load(this.config.dialogEntryPoint);
 
     // Configure things
     this.defaultTextSettings = {
@@ -38,13 +40,6 @@ export default class Main extends Phaser.Scene {
   }
 
   create() {
-    // Parse config
-    this.config = {};
-    parseCSV(this.cache.text.get('_config')).forEach((config) => {
-      const isArray = ['languages', 'stats', 'starting_stats'].indexOf(config.key) !== -1;
-      this.config[config.key] = isArray ? config.value.split(',') : config.value;
-    });
-
     // Parse strings
     this.strings = {};
     this.config.languages.forEach((language) => { this.strings[language] = {}; });
